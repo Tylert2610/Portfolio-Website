@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+- Only use code comments when they explain a relativly non-intuitive code path or when you are specifically asked to explain certain logic
+- Prioritize code readability where possible
+- Shoot for O of n time and spave complexities or better 
