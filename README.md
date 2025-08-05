@@ -41,7 +41,6 @@ src/
 - Git
 
 
-
 ## 🎨 Design System
 
 - **Color Scheme**: Modern dark theme
