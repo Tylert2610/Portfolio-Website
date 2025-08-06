@@ -18,6 +18,8 @@ export interface CardProps extends BaseComponentProps {
   description?: string;
   image?: string;
   link?: string;
+  category?: string;
+  placeholderType?: 'project' | 'blog' | 'value' | 'default';
 }
 
 export interface NavigationItem {

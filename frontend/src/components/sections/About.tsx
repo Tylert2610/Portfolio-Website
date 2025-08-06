@@ -1,10 +1,15 @@
 import React from 'react';
 import { Card } from '../common';
 import type { BaseComponentProps } from '../../types';
+import { defaultProjects } from '../../data/projects';
+import { calculateYearsOfExperience } from '../../data/experience';
 
 export type AboutProps = BaseComponentProps;
 
 export const About: React.FC<AboutProps> = ({ className = '' }) => {
+  const projectCount = defaultProjects.length;
+  const yearsOfExperience = calculateYearsOfExperience();
+
   return (
     <section
       id="about"
@@ -45,7 +50,7 @@ export const About: React.FC<AboutProps> = ({ className = '' }) => {
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="text-center p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  3+
+                  {yearsOfExperience}+
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">
                   Years Experience
@@ -53,7 +58,7 @@ export const About: React.FC<AboutProps> = ({ className = '' }) => {
               </div>
               <div className="text-center p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  20+
+                  {projectCount}+
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">
                   Projects Completed
@@ -84,16 +89,19 @@ export const About: React.FC<AboutProps> = ({ className = '' }) => {
             <Card
               title="Clean Code"
               description="Writing maintainable, well-documented code that others can easily understand and build upon."
+              placeholderType="value"
               className="text-center"
             />
             <Card
               title="User Experience"
               description="Creating intuitive, accessible interfaces that provide delightful user experiences."
+              placeholderType="value"
               className="text-center"
             />
             <Card
               title="Continuous Learning"
               description="Staying up-to-date with the latest technologies and best practices in web development."
+              placeholderType="value"
               className="text-center"
             />
           </div>

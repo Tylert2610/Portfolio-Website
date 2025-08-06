@@ -1,18 +1,8 @@
 import React from 'react';
 import type { BaseComponentProps } from '../../types';
+import { experienceData, type ExperienceItem } from '../../data/experience';
 
 export type ExperienceProps = BaseComponentProps;
-
-interface ExperienceItem {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  period: string;
-  description: string;
-  technologies: string[];
-  achievements: string[];
-}
 
 export const Experience: React.FC<ExperienceProps> = ({ className = '' }) => {
   return (
@@ -181,77 +171,19 @@ const ExperienceItem: React.FC<{ item: ExperienceItem; index: number }> = ({
   );
 };
 
-// Experience data
-const experienceData: ExperienceItem[] = [
-  {
-    id: '1',
-    title: 'Senior Full-Stack Developer',
-    company: 'TechCorp Solutions',
-    location: 'San Francisco, CA',
-    period: '2022 - Present',
-    description:
-      'Leading development of enterprise web applications and mentoring junior developers.',
-    technologies: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'AWS'],
-    achievements: [
-      'Led a team of 5 developers to deliver a major e-commerce platform',
-      'Improved application performance by 40% through optimization',
-      'Implemented CI/CD pipeline reducing deployment time by 60%',
-      'Mentored 3 junior developers and conducted code reviews',
-    ],
-  },
-  {
-    id: '2',
-    title: 'Full-Stack Developer',
-    company: 'InnovateWeb',
-    location: 'Remote',
-    period: '2021 - 2022',
-    description:
-      'Developed and maintained multiple client websites and web applications.',
-    technologies: ['React', 'JavaScript', 'Express.js', 'MongoDB', 'Heroku'],
-    achievements: [
-      'Built 15+ client websites with 100% client satisfaction',
-      'Reduced bug reports by 50% through improved testing practices',
-      'Collaborated with design team to implement responsive designs',
-      'Optimized database queries improving load times by 30%',
-    ],
-  },
-  {
-    id: '3',
-    title: 'Frontend Developer',
-    company: 'StartupHub',
-    location: 'Austin, TX',
-    period: '2020 - 2021',
-    description:
-      'Focused on creating responsive and accessible user interfaces.',
-    technologies: ['React', 'JavaScript', 'CSS3', 'HTML5', 'Git'],
-    achievements: [
-      'Developed 10+ reusable React components',
-      'Improved website accessibility score to 95%',
-      'Reduced bundle size by 25% through code optimization',
-      'Participated in agile development process with 2-week sprints',
-    ],
-  },
-];
+// Education data
 
 // Education data
 const educationData = [
   {
     id: '1',
-    degree: 'Bachelor of Science in Computer Science',
-    institution: 'University of Texas at Austin',
-    period: '2016 - 2020',
+    degree:
+      'Bachelor of Science in Information Networking and Telecommunications',
+    institution: 'Fort Hays State University',
+    period: 'August 2018 - May 2022',
     description:
-      'Focused on software engineering, algorithms, and web development. Completed capstone project on machine learning applications.',
-    gpa: '3.8/4.0',
-  },
-  {
-    id: '2',
-    degree: 'Web Development Bootcamp',
-    institution: 'Coding Academy',
-    period: '2020',
-    description:
-      'Intensive 12-week program covering full-stack web development with modern technologies.',
-    gpa: null,
+      'Focused on networking, telecommunications, and information systems. Served as President of the Advanced Technology Student Organization.',
+    gpa: '3.56/4.0',
   },
 ];
 
@@ -259,20 +191,20 @@ const educationData = [
 const certificationsData = [
   {
     id: '1',
-    name: 'AWS Certified Developer',
+    name: 'AWS Certified Cloud Practitioner',
     issuer: 'Amazon Web Services',
     date: '2023',
   },
   {
     id: '2',
-    name: 'React Developer Certification',
-    issuer: 'Meta',
+    name: 'Cisco Certified Network Associate (CCNA)',
+    issuer: 'Cisco',
     date: '2022',
   },
   {
     id: '3',
-    name: 'TypeScript Professional',
+    name: 'Microsoft Certified Azure Fundamentals',
     issuer: 'Microsoft',
-    date: '2021',
+    date: '2022',
   },
 ];

@@ -122,6 +122,8 @@ const BlogPostCard: React.FC<{ post: BlogPost }> = ({ post }) => {
       title={post.title}
       description={post.excerpt}
       image={post.image}
+      category={post.category}
+      placeholderType="blog"
       className="h-full hover:shadow-lg transition-shadow duration-300"
     >
       <div className="space-y-4">
@@ -156,7 +158,7 @@ const blogPosts: BlogPost[] = [
     date: 'January 10, 2024',
     readTime: '4 min read',
     category: 'Technology',
-    image: '/api/placeholder/400/250',
+    image: '',
     slug: 'future-web-development-2024',
   },
   {
@@ -167,7 +169,7 @@ const blogPosts: BlogPost[] = [
     date: 'January 8, 2024',
     readTime: '6 min read',
     category: 'React',
-    image: '/api/placeholder/400/250',
+    image: '',
     slug: 'optimizing-react-performance',
   },
   {
@@ -178,7 +180,7 @@ const blogPosts: BlogPost[] = [
     date: 'January 5, 2024',
     readTime: '5 min read',
     category: 'TypeScript',
-    image: '/api/placeholder/400/250',
+    image: '',
     slug: 'typescript-vs-javascript',
   },
   {
@@ -189,7 +191,7 @@ const blogPosts: BlogPost[] = [
     date: 'January 3, 2024',
     readTime: '7 min read',
     category: 'Accessibility',
-    image: '/api/placeholder/400/250',
+    image: '',
     slug: 'building-accessible-web-applications',
   },
   {
@@ -200,7 +202,7 @@ const blogPosts: BlogPost[] = [
     date: 'December 30, 2023',
     readTime: '8 min read',
     category: 'DevOps',
-    image: '/api/placeholder/400/250',
+    image: '',
     slug: 'deploying-to-aws-guide',
   },
   {
@@ -211,7 +213,7 @@ const blogPosts: BlogPost[] = [
     date: 'December 28, 2023',
     readTime: '6 min read',
     category: 'React',
-    image: '/api/placeholder/400/250',
+    image: '',
     slug: 'state-management-react-context-redux',
   },
 ];

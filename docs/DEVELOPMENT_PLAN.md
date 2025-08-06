@@ -8,8 +8,9 @@ A modern, responsive personal portfolio website showcasing development work and 
 
 - **Frontend**: TypeScript React
 - **Styling**: Tailwind CSS
-- **Backend**: Third-party contact form API (e.g., Formspree, Netlify Forms, or AWS Lambda + API Gateway)
-- **Hosting**: AWS (S3 + CloudFront for static hosting)
+- **Backend**: FastAPI (Python) with PostgreSQL database
+- **Backend Hosting**: Railway (cost-effective platform with free tier)
+- **Frontend Hosting**: AWS (S3 + CloudFront for static hosting)
 - **CI/CD**: GitHub Actions
 - **Domain**: Custom domain (portfolio.webbpulse.com) with Route 53
 
@@ -42,14 +43,17 @@ A modern, responsive personal portfolio website showcasing development work and 
 - [ ] Contact form integration
 - [ ] Blog section
 
-### Phase 4: Contact Form & Backend Integration (Week 4)
+### Phase 4: Backend Development & API Integration (Week 4)
 
-- [ ] Research and select third-party form service
-- [ ] Implement contact form component
-- [ ] Add form validation
-- [ ] Test form submission
-- [ ] Add success/error handling
-- [ ] Implement spam protection
+- [ ] Set up FastAPI backend project structure
+- [ ] Configure PostgreSQL database connection
+- [ ] Implement blog post CRUD operations
+- [ ] Create newsletter subscription endpoints
+- [ ] Set up JWT authentication for admin panel
+- [ ] Implement email notification system (AWS SES)
+- [ ] Create API documentation with Swagger/OpenAPI
+- [ ] Test all API endpoints
+- [ ] Set up CORS configuration for frontend integration
 
 ### Phase 5: Styling & Polish (Week 5)
 
@@ -60,8 +64,13 @@ A modern, responsive personal portfolio website showcasing development work and 
 - [ ] Add loading states
 - [ ] Optimize images and assets
 
-### Phase 6: AWS Infrastructure Setup (Week 6)
+### Phase 6: Backend Deployment & AWS Infrastructure Setup (Week 6)
 
+- [ ] Set up Railway account and project
+- [ ] Configure PostgreSQL database on Railway
+- [ ] Deploy FastAPI backend to Railway
+- [ ] Set up environment variables on Railway
+- [ ] Test backend API endpoints in production
 - [ ] Set up AWS S3 bucket for static hosting
 - [ ] Configure CloudFront distribution
 - [ ] Set up Route 53 for custom domain (portfolio.webbpulse.com)
@@ -116,6 +125,16 @@ A modern, responsive personal portfolio website showcasing development work and 
 - **Routing**: React Router (if multi-page)
 - **Testing**: Jest + React Testing Library
 
+### Backend Architecture
+
+- **Framework**: FastAPI (Python)
+- **Database**: PostgreSQL with SQLAlchemy ORM
+- **Authentication**: JWT tokens
+- **Email Service**: AWS SES
+- **API Documentation**: OpenAPI/Swagger
+- **Deployment**: Railway (free tier with PostgreSQL)
+- **Testing**: pytest
+
 ### AWS Infrastructure
 
 - **Static Hosting**: S3 bucket with public read access
@@ -132,16 +151,33 @@ A modern, responsive personal portfolio website showcasing development work and 
 - **Deploy**: S3 sync + CloudFront invalidation
 - **Notifications**: Slack/Email on success/failure
 
-### Contact Form Options
+### Backend Deployment Strategy
 
-**Recommended**: Formspree or Netlify Forms (prioritizing cost and ease of implementation)
+**Railway** (Recommended for cost-effectiveness and simplicity)
 
-1. **Formspree**: Simple, no backend required, free tier available
-2. **Netlify Forms**: Free tier available, integrates well with static sites
-3. **AWS Lambda + API Gateway**: More control, requires setup (not recommended for this project)
-4. **EmailJS**: Client-side email sending
+- **Cost**: Free tier includes 500 hours/month, then $5/month for basic plan
+- **Database**: Built-in PostgreSQL database
+- **Deployment**: Automatic deployment from GitHub repository
+- **SSL**: Automatic HTTPS certificates
+- **Environment Variables**: Easy configuration through Railway dashboard
+- **Monitoring**: Built-in logs and metrics
 
-## File Structure
+**Alternative Options**:
+
+1. **Render**: Free tier with 750 hours/month, then $7/month
+2. **Fly.io**: Generous free tier with 3 shared-cpu VMs
+3. **DigitalOcean App Platform**: $5/month for basic plan
+4. **AWS Lambda + API Gateway**: Pay per request (~$0.20 per million requests)
+
+### API Integration
+
+- **Blog Posts**: CRUD operations for blog content management
+- **Newsletter Subscriptions**: Email subscription management
+- **Admin Authentication**: JWT-based admin panel for content management
+- **Email Notifications**: Newsletter confirmations and new post notifications
+- **CORS Configuration**: Properly configured for frontend integration
+
+## FrontendFile Structure
 
 ```
 src/
@@ -163,8 +199,10 @@ src/
 - [ ] Mobile-friendly (responsive design)
 - [ ] 100% accessibility score
 - [ ] SEO optimized
-- [ ] Contact form working
-- [ ] Automated deployments
+- [ ] Backend API fully functional
+- [ ] Blog content management system working
+- [ ] Newsletter subscription system operational
+- [ ] Automated deployments (frontend and backend)
 - [ ] Zero critical security vulnerabilities
 
 ## Risk Mitigation
@@ -176,11 +214,13 @@ src/
 
 ## Design & Technical Decisions
 
-- **Contact Form**: Formspree or Netlify Forms (cost-effective, easy implementation)
+- **Backend**: FastAPI with PostgreSQL for robust blog and newsletter functionality
+- **Backend Deployment**: Railway (cost-effective, includes database, easy deployment)
 - **Domain**: portfolio.webbpulse.com (custom domain with Route 53)
 - **Design**: Modern dark color scheme, clean and professional
-- **Blog**: Included to showcase content creation skills
-- **AWS**: Basic familiarity with Lambda (serverless), will learn other services as needed
+- **Blog**: Full-featured blog with content management system
+- **Newsletter**: Email subscription system with AWS SES integration
+- **AWS**: S3 + CloudFront for frontend, SES for email, Route 53 for domain
 - **Analytics**: Stretch goal, not primary focus
 - **Theme**: Single dark color scheme, polished and professional
 - **Timeline**: 10-week plan with flexible scheduling

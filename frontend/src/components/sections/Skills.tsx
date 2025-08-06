@@ -12,21 +12,10 @@ export const Skills: React.FC<SkillsProps> = ({
   const skillCategories = [
     { name: 'Frontend', color: 'blue' },
     { name: 'Backend', color: 'green' },
-    { name: 'DevOps', color: 'purple' },
-    { name: 'Design', color: 'pink' },
+    { name: 'DevOps & Infrastructure', color: 'purple' },
+    { name: 'Networking & Security', color: 'red' },
     { name: 'Other', color: 'orange' },
   ];
-
-  const getCategoryColor = (category: string) => {
-    const colorMap: Record<string, string> = {
-      frontend: 'blue',
-      backend: 'green',
-      devops: 'purple',
-      design: 'pink',
-      other: 'orange',
-    };
-    return colorMap[category] || 'gray';
-  };
 
   const getSkillsByCategory = (category: string) => {
     return skills.filter(skill => skill.category === category);
@@ -69,36 +58,6 @@ export const Skills: React.FC<SkillsProps> = ({
               </div>
             );
           })}
-        </div>
-
-        {/* Proficiency Overview */}
-        <div className="mt-20">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-12">
-            Proficiency Levels
-          </h3>
-          <div className="grid md:grid-cols-2 gap-8">
-            {skills
-              .filter(skill => skill.proficiency >= 80)
-              .slice(0, 6)
-              .map(skill => (
-                <div key={skill.name} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">
-                      {skill.name}
-                    </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      {skill.proficiency}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full bg-${getCategoryColor(skill.category)}-500`}
-                      style={{ width: `${skill.proficiency}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-          </div>
         </div>
       </div>
     </section>
@@ -150,32 +109,47 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
 // Default skills data
 const defaultSkills: Skill[] = [
   // Frontend
-  { name: 'React', category: 'frontend', proficiency: 95, icon: '⚛️' },
-  { name: 'TypeScript', category: 'frontend', proficiency: 90, icon: '📘' },
-  { name: 'JavaScript', category: 'frontend', proficiency: 95, icon: '🟨' },
-  { name: 'HTML/CSS', category: 'frontend', proficiency: 90, icon: '🎨' },
-  { name: 'Tailwind CSS', category: 'frontend', proficiency: 85, icon: '🎯' },
-  { name: 'Next.js', category: 'frontend', proficiency: 80, icon: '⚡' },
+  { name: 'React', category: 'frontend', proficiency: 85, icon: '⚛️' },
+  { name: 'TypeScript', category: 'frontend', proficiency: 80, icon: '📘' },
+  { name: 'JavaScript', category: 'frontend', proficiency: 85, icon: '🟨' },
+  { name: 'HTML/CSS', category: 'frontend', proficiency: 80, icon: '🎨' },
+  { name: 'Tailwind CSS', category: 'frontend', proficiency: 75, icon: '🎯' },
+  { name: 'Flutter/Dart', category: 'frontend', proficiency: 70, icon: '📱' },
 
   // Backend
-  { name: 'Node.js', category: 'backend', proficiency: 85, icon: '🟢' },
-  { name: 'Express.js', category: 'backend', proficiency: 80, icon: '🚂' },
-  { name: 'Python', category: 'backend', proficiency: 75, icon: '🐍' },
-  { name: 'PostgreSQL', category: 'backend', proficiency: 70, icon: '🐘' },
-  { name: 'MongoDB', category: 'backend', proficiency: 75, icon: '🍃' },
+  { name: 'Python', category: 'backend', proficiency: 90, icon: '🐍' },
+  { name: 'FastAPI', category: 'backend', proficiency: 80, icon: '⚡' },
+  { name: 'PostgreSQL', category: 'backend', proficiency: 75, icon: '🐘' },
+  { name: 'SQL', category: 'backend', proficiency: 85, icon: '🗄️' },
+  { name: 'Firebase', category: 'backend', proficiency: 70, icon: '🔥' },
 
-  // DevOps
+  // DevOps & Infrastructure
+  { name: 'AWS', category: 'devops', proficiency: 80, icon: '☁️' },
+  { name: 'Docker', category: 'devops', proficiency: 75, icon: '🐳' },
+  { name: 'Kubernetes', category: 'devops', proficiency: 65, icon: '⚓' },
   { name: 'Git', category: 'devops', proficiency: 90, icon: '📚' },
-  { name: 'Docker', category: 'devops', proficiency: 70, icon: '🐳' },
-  { name: 'AWS', category: 'devops', proficiency: 65, icon: '☁️' },
-  { name: 'CI/CD', category: 'devops', proficiency: 75, icon: '🔄' },
+  { name: 'Bash', category: 'devops', proficiency: 85, icon: '💻' },
+  { name: 'Datadog', category: 'devops', proficiency: 80, icon: '📊' },
 
-  // Design
-  { name: 'Figma', category: 'design', proficiency: 70, icon: '🎨' },
-  { name: 'UI/UX Design', category: 'design', proficiency: 75, icon: '✨' },
+  // Networking & Security
+  {
+    name: 'Network Troubleshooting',
+    category: 'other',
+    proficiency: 85,
+    icon: '🌐',
+  },
+  { name: 'Wireshark', category: 'other', proficiency: 75, icon: '🔍' },
+  { name: 'Active Directory', category: 'other', proficiency: 80, icon: '🏢' },
+  { name: 'Azure', category: 'other', proficiency: 75, icon: '🔵' },
+  { name: 'GCP', category: 'other', proficiency: 70, icon: '☁️' },
 
   // Other
-  { name: 'Agile/Scrum', category: 'other', proficiency: 85, icon: '📋' },
-  { name: 'Testing', category: 'other', proficiency: 80, icon: '🧪' },
-  { name: 'Performance', category: 'other', proficiency: 75, icon: '⚡' },
+  { name: 'Problem Solving', category: 'other', proficiency: 95, icon: '🧩' },
+  {
+    name: 'Technical Documentation',
+    category: 'other',
+    proficiency: 85,
+    icon: '📝',
+  },
+  { name: 'Automation', category: 'other', proficiency: 90, icon: '🤖' },
 ];

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button } from '../common';
 import type { BaseComponentProps, Project } from '../../types';
+import { defaultProjects } from '../../data/projects';
 
 export interface ProjectsProps extends BaseComponentProps {
   projects?: Project[];
@@ -13,12 +14,41 @@ export const Projects: React.FC<ProjectsProps> = ({
   const [filter, setFilter] = useState<string>('all');
   const [showAll, setShowAll] = useState(false);
 
-  const categories = ['all', 'frontend', 'fullstack', 'backend', 'design'];
+  const categories = ['all', 'frontend', 'backend', 'automation'];
+
+  // Define technology mappings for each category
+  const categoryTechnologies = {
+    frontend: [
+      'react',
+      'typescript',
+      'javascript',
+      'html',
+      'css',
+      'tailwind',
+      'vite',
+      'flutter',
+      'dart',
+    ],
+    backend: [
+      'fastapi',
+      'postgresql',
+      'sqlalchemy',
+      'pydantic',
+      'firebase',
+      'nosql',
+    ],
+    automation: ['web scraping', 'automation', 'data processing', 'bash'],
+  };
 
   const filteredProjects = projects.filter(project => {
     if (filter === 'all') return true;
-    return project.technologies.some(tech =>
-      tech.toLowerCase().includes(filter)
+
+    const projectTechs = project.technologies.map(tech => tech.toLowerCase());
+    const categoryTechs =
+      categoryTechnologies[filter as keyof typeof categoryTechnologies] || [];
+
+    return categoryTechs.some(categoryTech =>
+      projectTechs.some(projectTech => projectTech.includes(categoryTech))
     );
   });
 
@@ -100,12 +130,34 @@ export const Projects: React.FC<ProjectsProps> = ({
 };
 
 const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
+  // Determine the primary category based on technologies
+  const getProjectCategory = (technologies: string[]): string => {
+    const techs = technologies.map(tech => tech.toLowerCase());
+
+    if (techs.some(tech => ['flutter', 'dart'].includes(tech)))
+      return 'flutter';
+    if (
+      techs.some(tech => ['react', 'typescript', 'javascript'].includes(tech))
+    )
+      return 'react';
+    if (techs.some(tech => ['python', 'fastapi'].includes(tech)))
+      return 'python';
+    if (techs.some(tech => ['web scraping', 'automation'].includes(tech)))
+      return 'automation';
+
+    return 'technology';
+  };
+
+  const category = getProjectCategory(project.technologies);
+
   return (
     <Card
       title={project.title}
       description={project.description}
       image={project.image}
       link={project.liveUrl || undefined}
+      category={category}
+      placeholderType="project"
       className="group hover:shadow-lg transition-all duration-300"
     >
       <div className="space-y-4">
@@ -155,95 +207,3 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
     </Card>
   );
 };
-
-// Default projects data
-const defaultProjects: Project[] = [
-  {
-    id: '1',
-    title: 'E-Commerce Platform',
-    description:
-      'A full-stack e-commerce platform built with React, Node.js, and PostgreSQL. Features include user authentication, product management, shopping cart, and payment integration.',
-    image: '/api/placeholder/400/250',
-    technologies: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Stripe'],
-    githubUrl: 'https://github.com/Tylert2610/ecommerce-platform',
-    liveUrl: 'https://ecommerce-demo.vercel.app',
-    featured: true,
-  },
-  {
-    id: '2',
-    title: 'Task Management App',
-    description:
-      'A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.',
-    image: '/api/placeholder/400/250',
-    technologies: ['React', 'TypeScript', 'Socket.io', 'MongoDB', 'Express'],
-    githubUrl: 'https://github.com/Tylert2610/task-manager',
-    liveUrl: 'https://task-manager-demo.vercel.app',
-    featured: true,
-  },
-  {
-    id: '3',
-    title: 'Weather Dashboard',
-    description:
-      'A beautiful weather dashboard that displays current weather and forecasts using OpenWeatherMap API with interactive charts and location-based features.',
-    image: '/api/placeholder/400/250',
-    technologies: ['React', 'TypeScript', 'Chart.js', 'OpenWeatherMap API'],
-    githubUrl: 'https://github.com/Tylert2610/weather-dashboard',
-    liveUrl: 'https://weather-dashboard-demo.vercel.app',
-    featured: false,
-  },
-  {
-    id: '4',
-    title: 'Portfolio Website',
-    description:
-      'A modern, responsive portfolio website built with React and Tailwind CSS, featuring smooth animations and SEO optimization.',
-    image: '/api/placeholder/400/250',
-    technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Vite'],
-    githubUrl: 'https://github.com/Tylert2610/portfolio-website',
-    liveUrl: 'https://portfolio.webbpulse.com',
-    featured: true,
-  },
-  {
-    id: '5',
-    title: 'Blog Platform',
-    description:
-      'A content management system for blogs with markdown support, user authentication, and admin dashboard.',
-    image: '/api/placeholder/400/250',
-    technologies: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'Markdown'],
-    githubUrl: 'https://github.com/Tylert2610/blog-platform',
-    liveUrl: 'https://blog-platform-demo.vercel.app',
-    featured: false,
-  },
-  {
-    id: '6',
-    title: 'API Gateway',
-    description:
-      'A microservices API gateway built with Node.js and Express, featuring rate limiting, authentication, and request routing.',
-    image: '/api/placeholder/400/250',
-    technologies: ['Node.js', 'Express', 'Redis', 'JWT', 'Docker'],
-    githubUrl: 'https://github.com/Tylert2610/api-gateway',
-    liveUrl: null,
-    featured: false,
-  },
-  {
-    id: '7',
-    title: 'Social Media Dashboard',
-    description:
-      'A comprehensive dashboard for managing multiple social media accounts with analytics and scheduling features.',
-    image: '/api/placeholder/400/250',
-    technologies: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'Social APIs'],
-    githubUrl: 'https://github.com/Tylert2610/social-dashboard',
-    liveUrl: 'https://social-dashboard-demo.vercel.app',
-    featured: false,
-  },
-  {
-    id: '8',
-    title: 'Real-time Chat App',
-    description:
-      'A real-time chat application with private messaging, group chats, and file sharing capabilities.',
-    image: '/api/placeholder/400/250',
-    technologies: ['React', 'Socket.io', 'Node.js', 'MongoDB', 'AWS S3'],
-    githubUrl: 'https://github.com/Tylert2610/chat-app',
-    liveUrl: 'https://chat-app-demo.vercel.app',
-    featured: false,
-  },
-];
