@@ -30,7 +30,7 @@ Create a `.env` file in the `backend/` directory with the following variables:
 ```env
 # SendGrid Configuration (Primary)
 SENDGRID_API_KEY=your-sendgrid-api-key-here
-SENDGRID_FROM_EMAIL=noreply@portfolio.webbpulse.com
+SENDGRID_FROM_EMAIL=noreply@webbpulse.com
 SENDGRID_FROM_NAME=Tyler Webb Portfolio
 
 # SMTP Configuration (Fallback)
@@ -40,7 +40,7 @@ SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
 
 # Legacy (kept for compatibility)
-EMAIL_FROM=noreply@portfolio.webbpulse.com
+EMAIL_FROM=noreply@webbpulse.com
 ```
 
 ### 3. Domain Verification
@@ -113,7 +113,7 @@ subscribers = ["user1@example.com", "user2@example.com"]
 success = email_service.send_new_post_notification(
     subscribers=subscribers,
     post_title="My New Blog Post",
-    post_url="https://portfolio.webbpulse.com/blog/my-new-post"
+    post_url="https://webbpulse.com/blog/my-new-post"
 )
 ```
 

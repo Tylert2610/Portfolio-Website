@@ -148,7 +148,7 @@ async def publish_post(
     subscriber_emails = [sub.email for sub in active_subscribers]
     
     if subscriber_emails:
-        post_url = f"https://portfolio.webbpulse.com/blog/{db_post.slug}"
+        post_url = f"https://webbpulse.com/blog/{db_post.slug}"
         email_service.send_new_post_notification(subscriber_emails, db_post.title, post_url)
     
     return {"message": "Post published successfully"}

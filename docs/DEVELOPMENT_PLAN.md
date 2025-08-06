@@ -12,7 +12,7 @@ A modern, responsive personal portfolio website showcasing development work and 
 - **Backend Hosting**: Railway (cost-effective platform with free tier)
 - **Frontend Hosting**: AWS (S3 + CloudFront for static hosting)
 - **CI/CD**: GitHub Actions
-- **Domain**: Custom domain (portfolio.webbpulse.com) with Route 53
+- **Domain**: Custom domain (webbpulse.com) with Route 53
 
 ## Development Phases
 
@@ -73,7 +73,7 @@ A modern, responsive personal portfolio website showcasing development work and 
 - [ ] Test backend API endpoints in production
 - [ ] Set up AWS S3 bucket for static hosting
 - [ ] Configure CloudFront distribution
-- [ ] Set up Route 53 for custom domain (portfolio.webbpulse.com)
+- [ ] Set up Route 53 for custom domain (webbpulse.com)
 - [ ] Configure SSL certificates
 - [ ] Set up environment variables
 - [ ] Test deployment process
@@ -216,7 +216,7 @@ src/
 
 - **Backend**: FastAPI with PostgreSQL for robust blog and newsletter functionality
 - **Backend Deployment**: Railway (cost-effective, includes database, easy deployment)
-- **Domain**: portfolio.webbpulse.com (custom domain with Route 53)
+- **Domain**: webbpulse.com (custom domain with Route 53)
 - **Design**: Modern dark color scheme, clean and professional
 - **Blog**: Full-featured blog with content management system
 - **Newsletter**: Email subscription system with AWS SES integration
