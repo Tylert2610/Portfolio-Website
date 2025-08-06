@@ -18,10 +18,10 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: Optional[str] = None
     EMAIL_FROM: str = "noreply@portfolio.webbpulse.com"
     
-    # AWS SES (alternative to SMTP)
-    AWS_ACCESS_KEY_ID: Optional[str] = None
-    AWS_SECRET_ACCESS_KEY: Optional[str] = None
-    AWS_REGION: str = "us-east-1"
+    # SendGrid (primary email service)
+    SENDGRID_API_KEY: Optional[str] = None
+    SENDGRID_FROM_EMAIL: str = "noreply@portfolio.webbpulse.com"
+    SENDGRID_FROM_NAME: str = "Tyler Webb Portfolio"
     
     # Application
     APP_NAME: str = "Portfolio Blog API"
