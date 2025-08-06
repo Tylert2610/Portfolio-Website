@@ -43,14 +43,13 @@ def test_email_service():
     success = email_service.send_newsletter_confirmation(test_email)
     print(f"   Result: {'✅ Success' if success else '❌ Failed'}")
     
-    # Test 2: New post notification
-    print("\n2. Testing new post notification email...")
-    success = email_service.send_new_post_notification(
-        [test_email], 
-        "Test Blog Post", 
-        "https://portfolio.webbpulse.com/blog/test-post"
-    )
-    print(f"   Result: {'✅ Success' if success else '❌ Failed'}")
+    # Test new post notification
+    test_emails = ["test@example.com"]
+    test_title = "Test Post"
+    test_url = "https://webbpulse.com/blog/test-post"
+    
+    result = email_service.send_new_post_notification(test_emails, test_title, test_url)
+    print(f"New post notification result: {result}")
     
     # Test 3: Custom email
     print("\n3. Testing custom email...")
