@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 from .config import settings
-from .database import engine, Base
-from .api.v1.api import api_router
+from .database import init_db, test_db_connection
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(
@@ -26,7 +27,22 @@ app.add_middleware(
 )
 
 # Include API routes
+from .api.v1.api import api_router
 app.include_router(api_router, prefix="/api/v1")
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database on startup"""
+    logger.info("Starting Portfolio Blog API...")
+    
+    # Test database connection
+    if test_db_connection():
+        # Initialize database tables
+        init_db()
+        logger.info("Database initialized successfully")
+    else:
+        logger.error("Failed to connect to database. Please check your database configuration.")
 
 
 @app.get("/")
@@ -36,4 +52,10 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"} 
+    """Health check endpoint"""
+    db_status = "healthy" if test_db_connection() else "unhealthy"
+    return {
+        "status": "healthy",
+        "database": db_status,
+        "version": "1.0.0"
+    } 

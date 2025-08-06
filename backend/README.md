@@ -1,143 +1,186 @@
-# Portfolio Blog API
+# Portfolio Blog API Backend
 
-A FastAPI backend for the portfolio website blog functionality, including content management, newsletter subscriptions, and email notifications.
+A FastAPI-based backend for the portfolio website blog functionality, featuring PostgreSQL database integration.
 
 ## Features
 
-- **Blog Posts**: CRUD operations for blog posts with categories
-- **Newsletter Subscriptions**: Email subscription management
-- **Admin Authentication**: JWT-based admin authentication
-- **Email Notifications**: Newsletter confirmations and new post notifications
-- **PostgreSQL Database**: Robust database with SQLAlchemy ORM
-- **API Documentation**: Automatic OpenAPI/Swagger documentation
+- FastAPI REST API with automatic OpenAPI documentation
+- PostgreSQL database with SQLAlchemy ORM
+- User authentication and authorization
+- Blog post management with categories
+- Email subscription system
+- Dockerized development environment
+- PgAdmin for database management (optional)
 
-## Tech Stack
-
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL
-- **ORM**: SQLAlchemy
-- **Authentication**: JWT
-- **Email**: AWS SES or SMTP
-- **Documentation**: OpenAPI/Swagger
-
-## Setup
-
-### Prerequisites
+## Prerequisites
 
 - Python 3.8+
-- PostgreSQL
-- pip
+- Docker and Docker Compose
+- Git
 
-### Installation
+## Quick Start
 
-1. **Clone the repository**
+### 1. Clone and Setup
 
-   ```bash
-   cd backend
-   ```
+```bash
+# Navigate to backend directory
+cd backend
 
-2. **Create virtual environment**
+# Copy environment template
+cp env.example .env
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+# Edit .env file with your configuration
+nano .env
+```
 
-3. **Install dependencies**
+### 2. Start Development Environment
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+# Run the development setup script
+./dev-setup.sh
+```
 
-4. **Set up environment variables**
+This script will:
+- Start PostgreSQL database container
+- Create virtual environment
+- Install dependencies
+- Initialize database tables
 
-   ```bash
-   cp env.example .env
-   # Edit .env with your configuration
-   ```
+### 3. Start FastAPI Application
 
-5. **Set up PostgreSQL database**
+```bash
+# Activate virtual environment
+source venv/bin/activate
 
-   ```sql
-   CREATE DATABASE portfolio_blog;
-   CREATE USER portfolio_user WITH PASSWORD 'your_password';
-   GRANT ALL PRIVILEGES ON DATABASE portfolio_blog TO portfolio_user;
-   ```
+# Start the application
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-6. **Update DATABASE_URL in .env**
-   ```
-   DATABASE_URL=postgresql://portfolio_user:your_password@localhost/portfolio_blog
-   ```
+### 4. Access the Application
 
-### Running the Application
+- API Documentation: http://localhost:8000/docs
+- ReDoc Documentation: http://localhost:8000/redoc
+- Health Check: http://localhost:8000/health
+- PgAdmin (optional): http://localhost:5050
 
-**Development mode:**
+## Manual Setup
+
+If you prefer to set up manually:
+
+### 1. Start Database
+
+```bash
+# Start PostgreSQL
+docker-compose up -d postgres
+
+# Check database health
+docker-compose exec postgres pg_isready -U portfolio_user -d portfolio_blog
+```
+
+### 2. Setup Python Environment
+
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 3. Initialize Database
+
+```bash
+# Initialize tables
+python -c "from app.database import init_db; init_db()"
+```
+
+### 4. Start Application
 
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**Production mode:**
+## Environment Variables
 
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+Create a `.env` file in the backend directory with the following variables:
+
+```env
+# Database Configuration
+POSTGRES_DB=portfolio_blog
+POSTGRES_USER=portfolio_user
+POSTGRES_PASSWORD=your_secure_password
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+
+# Security
+SECRET_KEY=your-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# Email Configuration
+SENDGRID_API_KEY=your_sendgrid_api_key
+SENDGRID_FROM_EMAIL=noreply@webbpulse.com
+SENDGRID_FROM_NAME=Tyler Webb Portfolio
+
+# Application
+DEBUG=true
 ```
 
-## API Documentation
+## Database Management
 
-Once the server is running, you can access:
+### Using PgAdmin
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **OpenAPI JSON**: http://localhost:8000/openapi.json
+1. Start pgAdmin with the tools profile:
+   ```bash
+   docker-compose --profile tools up -d pgadmin
+   ```
+
+2. Access pgAdmin at http://localhost:5050
+3. Login with credentials from your .env file
+4. Add server connection:
+   - Host: postgres (container name)
+   - Port: 5432
+   - Database: portfolio_blog
+   - Username: portfolio_user
+   - Password: (from .env file)
+
+### Using Command Line
+
+```bash
+# Access PostgreSQL shell
+docker-compose exec postgres psql -U portfolio_user -d portfolio_blog
+
+# View database logs
+docker-compose logs postgres
+
+# Reset database
+docker-compose down -v
+docker-compose up -d postgres
+```
 
 ## API Endpoints
 
-### Public Endpoints
+### Authentication
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/register` - User registration
 
-- `GET /api/v1/posts` - List all published posts
-- `GET /api/v1/posts/{slug}` - Get single post by slug
+### Blog Posts
+- `GET /api/v1/posts` - List all posts
+- `POST /api/v1/posts` - Create new post
+- `GET /api/v1/posts/{post_id}` - Get specific post
+- `PUT /api/v1/posts/{post_id}` - Update post
+- `DELETE /api/v1/posts/{post_id}` - Delete post
+
+### Categories
 - `GET /api/v1/categories` - List all categories
-- `POST /api/v1/subscribers/subscribe` - Subscribe to newsletter
-- `POST /api/v1/subscribers/unsubscribe` - Unsubscribe from newsletter
+- `POST /api/v1/categories` - Create new category
 
-### Admin Endpoints (Authentication Required)
-
-- `POST /api/v1/admin/login` - Admin login
-- `POST /api/v1/admin/posts` - Create new post
-- `PUT /api/v1/admin/posts/{id}` - Update post
-- `DELETE /api/v1/admin/posts/{id}` - Delete post
-- `POST /api/v1/admin/posts/{id}/publish` - Publish post
-- `POST /api/v1/admin/categories` - Create category
-- `PUT /api/v1/admin/categories/{id}` - Update category
-- `GET /api/v1/admin/subscribers` - List subscribers
-
-## Database Schema
-
-### Tables
-
-- **users**: Admin users for content management
-- **categories**: Blog post categories
-- **posts**: Blog posts with content and metadata
-- **subscribers**: Newsletter subscribers
-
-### Relationships
-
-- Posts belong to Categories (many-to-one)
-- Posts belong to Users (many-to-one)
-- Categories have many Posts (one-to-many)
-
-## Email Configuration
-
-The API supports two email methods:
-
-
-## Security
-
-- JWT tokens for admin authentication
-- Password hashing with bcrypt
-- CORS configuration for frontend integration
-- Environment variable configuration
+### Subscribers
+- `POST /api/v1/subscribers` - Subscribe to newsletter
+- `GET /api/v1/subscribers` - List subscribers (admin only)
 
 ## Development
 
@@ -146,54 +189,106 @@ The API supports two email methods:
 ```
 backend/
 ├── app/
-│   ├── main.py              # FastAPI application
-│   ├── config.py            # Configuration settings
-│   ├── database.py          # Database connection
-│   ├── models/              # SQLAlchemy models
-│   ├── schemas/             # Pydantic schemas
-│   ├── api/v1/endpoints/    # API endpoints
-│   ├── core/                # Core utilities
-│   └── utils/               # Helper utilities
-├── requirements.txt         # Python dependencies
-├── env.example             # Environment variables template
-└── README.md               # This file
+│   ├── api/           # API routes and endpoints
+│   ├── core/          # Core functionality (security, email)
+│   ├── models/        # SQLAlchemy database models
+│   ├── schemas/       # Pydantic models for validation
+│   ├── utils/         # Utility functions
+│   ├── config.py      # Configuration settings
+│   ├── database.py    # Database connection and setup
+│   └── main.py        # FastAPI application
+├── tests/             # Test files
+├── docker-compose.yml # Docker services
+├── requirements.txt   # Python dependencies
+└── README.md         # This file
 ```
 
-### Adding New Endpoints
+### Running Tests
 
-1. Create endpoint file in `app/api/v1/endpoints/`
-2. Add router to `app/api/v1/api.py`
-3. Update schemas if needed
-4. Add tests
+```bash
+# Install test dependencies
+pip install pytest pytest-asyncio httpx
 
-## Deployment
+# Run tests
+pytest
+```
 
-### Docker (Recommended)
+### Database Migrations
 
-1. **Build image**
+The application uses SQLAlchemy's `create_all()` for development. For production, consider using Alembic for migrations:
 
+```bash
+# Initialize Alembic
+alembic init alembic
+
+# Create migration
+alembic revision --autogenerate -m "Initial migration"
+
+# Apply migration
+alembic upgrade head
+```
+
+## Production Deployment
+
+### Railway Deployment
+
+1. Set up Railway project
+2. Add PostgreSQL service
+3. Configure environment variables
+4. Deploy application
+
+### Environment Variables for Production
+
+```env
+DATABASE_URL=postgresql://user:password@host:port/database
+SECRET_KEY=your-production-secret-key
+DEBUG=false
+SENDGRID_API_KEY=your-production-sendgrid-key
+```
+
+## Troubleshooting
+
+### Database Connection Issues
+
+1. Check if PostgreSQL container is running:
    ```bash
-   docker build -t portfolio-blog-api .
+   docker-compose ps
    ```
 
-2. **Run container**
+2. Check database logs:
    ```bash
-   docker run -p 8000:8000 --env-file .env portfolio-blog-api
+   docker-compose logs postgres
    ```
 
-### Manual Deployment
+3. Test database connection:
+   ```bash
+   python -c "from app.database import test_db_connection; print(test_db_connection())"
+   ```
 
-1. Set up PostgreSQL on your server
-2. Configure environment variables
-3. Install dependencies
-4. Run with uvicorn or gunicorn
+### Port Conflicts
+
+If port 5432 is already in use:
+1. Change `POSTGRES_PORT` in `.env` file
+2. Update `DATABASE_URL` accordingly
+3. Restart containers: `docker-compose down && docker-compose up -d`
+
+### Permission Issues
+
+If you get permission errors:
+```bash
+# Make setup script executable
+chmod +x dev-setup.sh
+
+# Fix Docker permissions (if needed)
+sudo usermod -aG docker $USER
+```
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
+1. Create a feature branch
+2. Make your changes
+3. Add tests if applicable
+4. Run linting and tests
 5. Submit a pull request
 
 ## License
