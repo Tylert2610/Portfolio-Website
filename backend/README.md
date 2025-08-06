@@ -131,22 +131,6 @@ Once the server is running, you can access:
 
 The API supports two email methods:
 
-### Option 1: SMTP (Gmail, etc.)
-
-```env
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
-```
-
-### Option 2: AWS SES
-
-```env
-AWS_ACCESS_KEY_ID=your-aws-access-key
-AWS_SECRET_ACCESS_KEY=your-aws-secret-key
-AWS_REGION=us-east-1
-```
 
 ## Security
 

@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import List, Optional
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Email, To, Content, HtmlContent, TextContent
+from sendgrid.helpers.mail import Mail, Email, To, Content, HtmlContent, PlainTextContent
 from ..config import settings
 import logging
 
@@ -33,7 +33,7 @@ class EmailService:
             
             # Create email content
             html_content_obj = HtmlContent(html_content)
-            text_content_obj = TextContent(text_content)
+            text_content_obj = PlainTextContent(text_content)
             
             # Create mail object
             mail = Mail(from_email, to_email_obj, subject, text_content_obj)

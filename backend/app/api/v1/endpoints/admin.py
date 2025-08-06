@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
 from ....database import get_db
-from ....models import Post, Category, Subscriber, User
-from ....schemas import PostCreate, PostUpdate, CategoryCreate, CategoryUpdate, User, UserCreate, UserLogin, Token
+from ....models import Post as PostModel, Category as CategoryModel, Subscriber as SubscriberModel, User as UserModel
+from ....schemas import PostCreate, PostUpdate, CategoryCreate, CategoryUpdate, User, UserCreate, UserLogin, Token, Post, Category, Subscriber
 from ....core.security import verify_password, get_password_hash, create_access_token, verify_token
 from ....core.email import email_service
 from slugify import slugify
@@ -17,7 +17,7 @@ security = HTTPBearer()
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
-) -> User:
+) -> UserModel:
     """Get current authenticated user"""
     token = credentials.credentials
     username = verify_token(token)
@@ -28,7 +28,7 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(UserModel).filter(UserModel.username == username).first()
     if not user or not user.is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -40,7 +40,7 @@ def get_current_user(
 @router.post("/login", response_model=Token)
 async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
     """Admin login"""
-    user = db.query(User).filter(User.username == user_credentials.username).first()
+    user = db.query(UserModel).filter(UserModel.username == user_credentials.username).first()
     if not user or not verify_password(user_credentials.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -56,7 +56,7 @@ async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
 @router.post("/posts", response_model=Post)
 async def create_post(
     post: PostCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Create a new blog post"""
@@ -65,11 +65,11 @@ async def create_post(
         post.slug = slugify(post.title)
     
     # Check if slug already exists
-    existing_post = db.query(Post).filter(Post.slug == post.slug).first()
+    existing_post = db.query(PostModel).filter(PostModel.slug == post.slug).first()
     if existing_post:
         raise HTTPException(status_code=400, detail="Post with this slug already exists")
     
-    db_post = Post(
+    db_post = PostModel(
         title=post.title,
         slug=post.slug,
         content=post.content,
@@ -90,11 +90,11 @@ async def create_post(
 async def update_post(
     post_id: int,
     post_update: PostUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Update a blog post"""
-    db_post = db.query(Post).filter(Post.id == post_id).first()
+    db_post = db.query(PostModel).filter(PostModel.id == post_id).first()
     if not db_post:
         raise HTTPException(status_code=404, detail="Post not found")
     
@@ -111,11 +111,11 @@ async def update_post(
 @router.delete("/posts/{post_id}")
 async def delete_post(
     post_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Delete a blog post"""
-    db_post = db.query(Post).filter(Post.id == post_id).first()
+    db_post = db.query(PostModel).filter(PostModel.id == post_id).first()
     if not db_post:
         raise HTTPException(status_code=404, detail="Post not found")
     
@@ -128,11 +128,11 @@ async def delete_post(
 @router.post("/posts/{post_id}/publish")
 async def publish_post(
     post_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Publish a blog post and notify subscribers"""
-    db_post = db.query(Post).filter(Post.id == post_id).first()
+    db_post = db.query(PostModel).filter(PostModel.id == post_id).first()
     if not db_post:
         raise HTTPException(status_code=404, detail="Post not found")
     
@@ -144,7 +144,7 @@ async def publish_post(
     db.commit()
     
     # Notify subscribers
-    active_subscribers = db.query(Subscriber).filter(Subscriber.status == "active").all()
+    active_subscribers = db.query(SubscriberModel).filter(SubscriberModel.status == "active").all()
     subscriber_emails = [sub.email for sub in active_subscribers]
     
     if subscriber_emails:
@@ -158,7 +158,7 @@ async def publish_post(
 @router.post("/categories", response_model=Category)
 async def create_category(
     category: CategoryCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Create a new category"""
@@ -167,11 +167,11 @@ async def create_category(
         category.slug = slugify(category.name)
     
     # Check if slug already exists
-    existing_category = db.query(Category).filter(Category.slug == category.slug).first()
+    existing_category = db.query(CategoryModel).filter(CategoryModel.slug == category.slug).first()
     if existing_category:
         raise HTTPException(status_code=400, detail="Category with this slug already exists")
     
-    db_category = Category(name=category.name, slug=category.slug)
+    db_category = CategoryModel(name=category.name, slug=category.slug)
     db.add(db_category)
     db.commit()
     db.refresh(db_category)
@@ -183,11 +183,11 @@ async def create_category(
 async def update_category(
     category_id: int,
     category_update: CategoryUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Update a category"""
-    db_category = db.query(Category).filter(Category.id == category_id).first()
+    db_category = db.query(CategoryModel).filter(CategoryModel.id == category_id).first()
     if not db_category:
         raise HTTPException(status_code=404, detail="Category not found")
     
@@ -204,9 +204,9 @@ async def update_category(
 # Subscriber management endpoints
 @router.get("/subscribers", response_model=List[Subscriber])
 async def get_subscribers(
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Get all subscribers"""
-    subscribers = db.query(Subscriber).order_by(Subscriber.subscribed_at.desc()).all()
+    subscribers = db.query(SubscriberModel).order_by(SubscriberModel.subscribed_at.desc()).all()
     return subscribers 
