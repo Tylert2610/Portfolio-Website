@@ -1,0 +1,52 @@
+---
+alwaysApply: true
+---
+
+- Follow the established component structure: common/, layout/, sections/
+- Use the dark theme color scheme consistently throughout the application
+- Implement smooth animations and transitions for better UX
+- Ensure all forms have proper validation and error handling
+- Follow the AWS deployment strategy outlined in the development plan
+- Use modern React patterns: hooks, context, and functional components
+- Implement responsive design with mobile-first approach
+- Add proper SEO meta tags and structured data
+- Ensure accessibility compliance (WCAG 2.1 AA standards)
+- Use semantic HTML elements throughout the application
+- Implement proper loading states and error boundaries
+- Add smooth scrolling for navigation links
+- Use Tailwind CSS for all styling with consistent design tokens
+- Implement proper TypeScript interfaces for all component props
+- Add proper ARIA labels and keyboard navigation support
+- Ensure cross-browser compatibility (Chrome, Firefox, Safari, Edge)
+- Optimize for Core Web Vitals and performance metrics
+- Use proper image optimization and lazy loading
+- Implement proper form validation with user-friendly error messages
+- Add proper analytics tracking (when implemented)
+- Follow the development plan phases and priorities
+- Use consistent naming conventions for files and components
+- Implement proper state management patterns
+- Add proper documentation for complex components
+- Follow the established component structure: common/, layout/, sections/
+- Use the dark theme color scheme consistently throughout the application
+- Implement smooth animations and transitions for better UX
+- Ensure all forms have proper validation and error handling
+- Follow the AWS deployment strategy outlined in the development plan
+- Use modern React patterns: hooks, context, and functional components
+- Implement responsive design with mobile-first approach
+- Add proper SEO meta tags and structured data
+- Ensure accessibility compliance (WCAG 2.1 AA standards)
+- Use semantic HTML elements throughout the application
+- Implement proper loading states and error boundaries
+- Add smooth scrolling for navigation links
+- Use Tailwind CSS for all styling with consistent design tokens
+- Implement proper TypeScript interfaces for all component props
+- Add proper ARIA labels and keyboard navigation support
+- Ensure cross-browser compatibility (Chrome, Firefox, Safari, Edge)
+- Optimize for Core Web Vitals and performance metrics
+- Use proper image optimization and lazy loading
+- Implement proper form validation with user-friendly error messages
+- Add proper analytics tracking (when implemented)
+- Follow the development plan phases and priorities
+- Use consistent naming conventions for files and components
+- Implement proper state management patterns
+- Add proper documentation for complex components

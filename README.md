@@ -1,80 +1,105 @@
-# Portfolio Website
+# WebbPulse Portfolio Website
 
-A modern, responsive personal portfolio website showcasing development work and skills, built with TypeScript React and Tailwind CSS, deployed on AWS with automated CI/CD.
+A modern, responsive personal portfolio website showcasing development work and skills, built with TypeScript React and Tailwind CSS.
 
-## 🚀 Project Overview
+## 🚀 Tech Stack
 
-This portfolio website serves as a professional showcase for development work, skills, and experience. It features a modern dark design, responsive layout, and includes a blog section to demonstrate content creation abilities.
-
-## 🛠️ Tech Stack
-
-- **Frontend**: TypeScript React with Vite
+- **Frontend**: React 19 with TypeScript
+- **Build Tool**: Vite with SWC for fast compilation
 - **Styling**: Tailwind CSS
-- **Backend**: Third-party contact form (Formspree/Netlify Forms)
-- **Hosting**: AWS S3 + CloudFront
-- **CI/CD**: GitHub Actions
-- **Domain**: portfolio.webbpulse.com
+- **Package Manager**: npm
+- **Development**: Hot Module Replacement (HMR)
 
-
-## 🏗️ Project Structure
-
-```
-src/
-├── components/
-│   ├── common/          # Reusable UI components
-│   ├── layout/          # Layout components (Header, Footer, etc.)
-│   └── sections/        # Page sections (About, Projects, etc.)
-├── pages/               # Page components
-├── hooks/               # Custom React hooks
-├── utils/               # Utility functions
-├── types/               # TypeScript type definitions
-├── assets/              # Images, icons, etc.
-└── styles/              # Global styles and Tailwind config
-```
-
-## 🚀 Getting Started
+## 📦 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Git
+- Node.js 18+
+- npm
 
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd Portfolio-Website
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Start the development server:
+
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+## 🛠️ Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run lint` - Run ESLint
+- `npm run preview` - Preview production build
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── common/         # Common components (Button, Card, etc.)
+│   ├── layout/         # Layout components (Header, Footer, etc.)
+│   └── sections/       # Page sections (Hero, About, etc.)
+├── pages/              # Page components
+├── hooks/              # Custom React hooks
+├── utils/              # Utility functions
+├── types/              # TypeScript type definitions
+├── assets/             # Static assets
+└── styles/             # Global styles
+```
 
 ## 🎨 Design System
 
-- **Color Scheme**: Modern dark theme
-- **Typography**: Clean, readable fonts
-- **Layout**: Responsive grid system
-- **Animations**: Smooth transitions and micro-interactions
+- **Theme**: Modern dark color scheme
+- **Colors**: Gray scale with blue accents
+- **Typography**: System fonts with responsive sizing
+- **Layout**: Responsive grid system with Tailwind CSS
 
-## 📱 Responsive Design
+## 🚀 Development Plan
 
-The website is designed to work seamlessly across all devices:
-- Desktop (1200px+)
-- Tablet (768px - 1199px)
-- Mobile (320px - 767px)
+This project follows a 10-week development plan with the following phases:
 
+1. ✅ **Project Setup & Foundation** - Vite, React, TypeScript, Tailwind CSS
+2. 🔄 **Core Website Structure** - Layout components and navigation
+3. 📋 **Content Sections** - About, Skills, Projects, Contact
+4. 📧 **Contact Form & Backend** - Form integration and validation
+5. 🎨 **Styling & Polish** - Animations and responsive design
+6. ☁️ **AWS Infrastructure** - S3, CloudFront, Route 53
+7. 🔄 **CI/CD Pipeline** - GitHub Actions automation
+8. 🧪 **Testing & Optimization** - Performance and accessibility
+9. 📝 **Content & Launch Prep** - Content creation and SEO
+10. 🚀 **Launch & Post-Launch** - Deployment and monitoring
 
+## 📋 Current Status
 
-## 📊 Performance
-
-Target performance metrics:
-- **Lighthouse Score**: 90+
-- **Core Web Vitals**: All in the green
-- **Load Time**: Under 3 seconds
-- **Accessibility**: 100% score
-
-## 🔒 Security
-
-- HTTPS enforced
-- Content Security Policy (CSP) headers
-- Regular dependency updates
-- Security vulnerability scanning
+- ✅ Project initialized with Vite React TypeScript
+- ✅ SWC configured for fast compilation
+- ✅ Tailwind CSS setup with dark theme
+- ✅ Basic portfolio structure implemented
+- 🔄 Component structure and layout components (in progress)
 
 ## 🤝 Contributing
 
-This is a personal portfolio project, but suggestions and feedback are welcome!
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
 
 ## 📄 License
 
@@ -82,27 +107,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Website**: [portfolio.webbpulse.com](https://portfolio.webbpulse.com)
-- **Email**: tylert2610@gmail.com
-- **GitHub**: https://github.com/Tylert2610
-
-## 🗺️ Roadmap
-
-### Development Phases
-
-1. ✅ Project Setup & Foundation
-2. 🔄 Core Website Structure
-3. ⏳ Content Sections
-4. ⏳ Contact Form & Backend Integration
-5. ⏳ Styling & Polish
-6. ⏳ AWS Infrastructure Setup
-7. ⏳ CI/CD Pipeline
-8. ⏳ Testing & Optimization
-9. ⏳ Content & Launch Preparation
-10. ⏳ Launch & Post-Launch
+- **Website**: [portfolio.webbpulse.com](https://portfolio.webbpulse.com) (coming soon)
+- **Email**: [your-email@example.com]
+- **LinkedIn**: [Your LinkedIn Profile]
 
 ---
 
-**Status**: 🚧 In Development
-
-*This README will be updated as the project progresses.*
+Built with ❤️ using React, TypeScript, and Tailwind CSS

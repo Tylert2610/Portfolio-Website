@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+
+- Suggest meaningful commit messages that reference the Linear issue number
+- When multiple files are changed for one feature, group them in a single commit
+- Always check for merge conflicts before suggesting pulls from main
+- Suggest squash commits for feature branches before merging to main
+- When starting work on an issue, automatically check if a branch exists. If not, create one using the pattern: `tyler/por-{issue-number}-{kebab-case-title}`
+- Always work on feature branches, never directly on main
+- Before committing, verify the branch name matches the issue being worked on
+- Ask for permission to make incremental commits to the branch being worked on when good stopping points are reached
+- When creating new components, always include TypeScript interfaces for props
+- Use Tailwind CSS utility classes consistently, avoid custom CSS unless necessary
+- Implement responsive design using Tailwind's responsive prefixes (sm:, md:, lg:, xl:)
+- Add proper JSDoc comments for complex functions and components
+- When suggesting file changes, always specify the exact file path and line numbers
+- Update relevant documentation when making architectural changes
+- When creating new components, suggest adding them to the component documentation
+- Always explain the reasoning behind significant code changes
+- When suggesting refactoring, explain the benefits and potential risks
+- Suggest meaningful commit messages that reference the Linear issue number
+- When multiple files are changed for one feature, group them in a single commit
+- Always check for merge conflicts before suggesting pulls from main
+- Suggest squash commits for feature branches before merging to main
+- When starting work on an issue, automatically check if a branch exists. If not, create one using the pattern: `tyler/por-{issue-number}-{kebab-case-title}`
+- Always work on feature branches, never directly on main
+- Before committing, verify the branch name matches the issue being worked on
+- Ask for permission to make incremental commits to the branch being worked on when good stopping points are reached
+- When creating new components, always include TypeScript interfaces for props
+- Use Tailwind CSS utility classes consistently, avoid custom CSS unless necessary
+- Implement responsive design using Tailwind's responsive prefixes (sm:, md:, lg:, xl:)
+- Add proper JSDoc comments for complex functions and components
+- When suggesting file changes, always specify the exact file path and line numbers
+- Update relevant documentation when making architectural changes
+- When creating new components, suggest adding them to the component documentation
+- Always explain the reasoning behind significant code changes
+- When suggesting refactoring, explain the benefits and potential risks

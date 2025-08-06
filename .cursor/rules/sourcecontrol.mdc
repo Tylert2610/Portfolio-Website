@@ -1,0 +1,32 @@
+---
+alwaysApply: true
+---
+
+- If operating on the main branch, look at the linear development plan to determine if an issue already exists for the work you are doing. If it does, see if the issue has a branch associated with it. If it does, checkout that branch. If it does not, create a new branch and name it after the issue.
+- Ask for permission to make incremental commits to the branch being worked on when good stopping points are reached.
+- Always create feature branches for new work using the pattern: `tyler/por-{issue-number}-{kebab-case-title}`
+- Never commit directly to main branch
+- Use conventional commit messages: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
+- Always include the Linear issue number in commit messages: `feat(POR-14): add component structure`
+- Before pushing, ensure all tests pass and code is properly formatted
+- Use meaningful commit messages that describe what and why, not how
+- Squash commits on feature branches before merging to main
+- Always pull latest changes from main before creating new branches
+- Check for merge conflicts before merging feature branches
+- Use `git stash` for temporary work when switching branches
+- Review staged changes before committing using `git diff --cached`
+- Ask for permission to make incremental commits to the branch being worked on when good stopping points are reached.
+- If operating on the main branch, look at the linear development plan to determine if an issue already exists for the work you are doing. If it does, see if the issue has a branch associated with it. If it does, checkout that branch. If it does not, create a new branch and name it after the issue.
+- Ask for permission to make incremental commits to the branch being worked on when good stopping points are reached.
+- Always create feature branches for new work using the pattern: `tyler/por-{issue-number}-{kebab-case-title}`
+- Never commit directly to main branch
+- Use conventional commit messages: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
+- Always include the Linear issue number in commit messages: `feat(POR-14): add component structure`
+- Before pushing, ensure all tests pass and code is properly formatted
+- Use meaningful commit messages that describe what and why, not how
+- Squash commits on feature branches before merging to main
+- Always pull latest changes from main before creating new branches
+- Check for merge conflicts before merging feature branches
+- Use `git stash` for temporary work when switching branches
+- Review staged changes before committing using `git diff --cached`
+- Ask for permission to make incremental commits to the branch being worked on when good stopping points are reached.
