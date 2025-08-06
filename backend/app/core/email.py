@@ -1,7 +1,4 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Email, To, Content, HtmlContent, PlainTextContent
 from ..config import settings
@@ -23,10 +20,10 @@ class EmailService:
             logger.info("SendGrid email service initialized")
         else:
             self.use_sendgrid = False
-            logger.warning("SendGrid API key not provided, falling back to SMTP")
+            logger.warning("SendGrid API key not provided - email functionality disabled")
     
     def send_email_sendgrid(self, to_email: str, subject: str, html_content: str, text_content: str) -> bool:
-        """Send email using SendGrid API"""
+        """Send email using SendGrid API with custom content"""
         try:
             from_email = Email(self.from_email, self.from_name)
             to_email_obj = To(to_email)
@@ -53,157 +50,87 @@ class EmailService:
             logger.error(f"Error sending email via SendGrid: {e}")
             return False
     
-    def send_email_smtp(self, to_email: str, subject: str, html_content: str, text_content: str) -> bool:
-        """Send email using SMTP (fallback method)"""
-        if not all([settings.SMTP_HOST, settings.SMTP_USER, settings.SMTP_PASSWORD]):
-            logger.error("SMTP settings not configured")
-            return False
-        
+    def send_template_email(self, to_email: str, template_id: str, dynamic_template_data: Dict[str, Any]) -> bool:
+        """Send email using SendGrid template"""
         try:
-            msg = MIMEMultipart('alternative')
-            msg['Subject'] = subject
-            msg['From'] = f"{self.from_name} <{self.from_email}>"
-            msg['To'] = to_email
+            from_email = Email(self.from_email, self.from_name)
+            to_email_obj = To(to_email)
             
-            text_part = MIMEText(text_content, 'plain')
-            html_part = MIMEText(html_content, 'html')
+            # Create mail object with template
+            mail = Mail(from_email, to_email_obj)
+            mail.template_id = template_id
+            mail.dynamic_template_data = dynamic_template_data
             
-            msg.attach(text_part)
-            msg.attach(html_part)
+            # Send email
+            response = self.sendgrid_client.send(mail)
             
-            with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
-                server.starttls()
-                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-                server.send_message(msg)
-            
-            logger.info(f"Email sent successfully to {to_email} via SMTP")
-            return True
+            if response.status_code in [200, 201, 202]:
+                logger.info(f"Template email sent successfully to {to_email} via SendGrid")
+                return True
+            else:
+                logger.error(f"SendGrid API error: {response.status_code} - {response.body}")
+                return False
+                
         except Exception as e:
-            logger.error(f"Error sending email via SMTP: {e}")
+            logger.error(f"Error sending template email via SendGrid: {e}")
             return False
     
     def send_email(self, to_email: str, subject: str, html_content: str, text_content: str) -> bool:
-        """Send email using the configured method (SendGrid preferred, SMTP fallback)"""
+        """Send email using SendGrid with custom content"""
         if self.use_sendgrid:
-            success = self.send_email_sendgrid(to_email, subject, html_content, text_content)
-            if not success and settings.SMTP_HOST:
-                logger.info("SendGrid failed, falling back to SMTP")
-                return self.send_email_smtp(to_email, subject, html_content, text_content)
-            return success
+            return self.send_email_sendgrid(to_email, subject, html_content, text_content)
         else:
-            return self.send_email_smtp(to_email, subject, html_content, text_content)
+            logger.error("SendGrid API key not configured - cannot send email")
+            return False
     
     def send_newsletter_confirmation(self, email: str) -> bool:
-        """Send newsletter subscription confirmation email"""
-        subject = "Welcome to the Newsletter!"
-        html_content = f"""
-        <html>
-            <head>
-                <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background-color: #1f2937; color: white; padding: 20px; text-align: center; }}
-                    .content {{ padding: 20px; background-color: #f9fafb; }}
-                    .footer {{ padding: 20px; text-align: center; color: #6b7280; font-size: 14px; }}
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>Welcome to the Newsletter!</h1>
-                    </div>
-                    <div class="content">
-                        <p>Thank you for subscribing to my newsletter! You'll now receive updates about:</p>
-                        <ul>
-                            <li>New blog posts and tech insights</li>
-                            <li>Latest projects and developments</li>
-                            <li>Industry trends and best practices</li>
-                        </ul>
-                        <p>I'm excited to share my knowledge and experiences with you!</p>
-                    </div>
-                    <div class="footer">
-                        <p>Best regards,<br><strong>Tyler Webb</strong><br>Escalations Engineer at Verkada</p>
-                    </div>
-                </div>
-            </body>
-        </html>
-        """
-        text_content = f"""
-        Welcome to the Newsletter!
+        """Send newsletter subscription confirmation email using template"""
+        # TODO: Replace with actual template ID when available
+        template_id = "d-newsletter_confirmation_template_id"  # Placeholder
         
-        Thank you for subscribing to my newsletter! You'll now receive updates about:
-        - New blog posts and tech insights
-        - Latest projects and developments
-        - Industry trends and best practices
+        dynamic_template_data = {
+            "email": email,
+            "name": "Subscriber",  # Could be personalized if name is collected
+            "signup_date": "today",  # Could be actual date
+            "unsubscribe_url": f"{settings.FRONTEND_URL}/unsubscribe?email={email}" if hasattr(settings, 'FRONTEND_URL') else "#"
+        }
         
-        I'm excited to share my knowledge and experiences with you!
-        
-        Best regards,
-        Tyler Webb
-        Escalations Engineer at Verkada
-        """
-        
-        return self.send_email(email, subject, html_content, text_content)
+        if self.use_sendgrid:
+            return self.send_template_email(email, template_id, dynamic_template_data)
+        else:
+            logger.error("SendGrid API key not configured - cannot send email")
+            return False
     
-    def send_new_post_notification(self, subscribers: List[str], post_title: str, post_url: str) -> bool:
-        """Send new post notification to all subscribers"""
-        subject = f"New Blog Post: {post_title}"
-        html_content = f"""
-        <html>
-            <head>
-                <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background-color: #1f2937; color: white; padding: 20px; text-align: center; }}
-                    .content {{ padding: 20px; background-color: #f9fafb; }}
-                    .button {{ display: inline-block; background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }}
-                    .footer {{ padding: 20px; text-align: center; color: #6b7280; font-size: 14px; }}
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>New Blog Post Available!</h1>
-                    </div>
-                    <div class="content">
-                        <p>A new blog post has been published: <strong>{post_title}</strong></p>
-                        <p>I've shared some insights and experiences that I think you'll find valuable.</p>
-                        <a href="{post_url}" class="button">Read the Full Post</a>
-                        <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
-                        <p>{post_url}</p>
-                    </div>
-                    <div class="footer">
-                        <p>Best regards,<br><strong>Tyler Webb</strong><br>Escalations Engineer at Verkada</p>
-                    </div>
-                </div>
-            </body>
-        </html>
-        """
-        text_content = f"""
-        New Blog Post Available!
+    def send_new_post_notification(self, emails: List[str], post_title: str, post_url: str) -> bool:
+        """Send notification to subscribers about a new blog post using template"""
+        # TODO: Replace with actual template ID when available
+        template_id = "d-new_post_notification_template_id"  # Placeholder
         
-        A new blog post has been published: {post_title}
+        dynamic_template_data = {
+            "post_title": post_title,
+            "post_url": post_url,
+            "author_name": "Tyler Webb",
+            "author_title": "Escalations Engineer at Verkada",
+            "unsubscribe_url": "#"  # Could be personalized per subscriber
+        }
         
-        I've shared some insights and experiences that I think you'll find valuable.
+        if not self.use_sendgrid:
+            logger.error("SendGrid API key not configured - cannot send email")
+            return False
         
-        Read the full post here: {post_url}
-        
-        Best regards,
-        Tyler Webb
-        Escalations Engineer at Verkada
-        """
-        
+        # Send to each subscriber
         success_count = 0
-        total_count = len(subscribers)
-        
-        for subscriber_email in subscribers:
-            if self.send_email(subscriber_email, subject, html_content, text_content):
+        for email in emails:
+            # Add subscriber-specific data
+            subscriber_data = dynamic_template_data.copy()
+            subscriber_data["email"] = email
+            subscriber_data["unsubscribe_url"] = f"{settings.FRONTEND_URL}/unsubscribe?email={email}" if hasattr(settings, 'FRONTEND_URL') else "#"
+            
+            if self.send_template_email(email, template_id, subscriber_data):
                 success_count += 1
-            else:
-                logger.error(f"Failed to send notification to {subscriber_email}")
         
-        logger.info(f"Sent {success_count}/{total_count} new post notifications successfully")
-        return success_count > 0
+        logger.info(f"New post notification sent to {success_count}/{len(emails)} subscribers")
+        return success_count == len(emails)
 
 
 # Create global email service instance

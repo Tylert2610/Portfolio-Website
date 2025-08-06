@@ -23,7 +23,6 @@ def test_email_service():
     
     # Test configuration
     print(f"SendGrid API Key configured: {'Yes' if os.getenv('SENDGRID_API_KEY') else 'No'}")
-    print(f"SMTP configured: {'Yes' if os.getenv('SMTP_HOST') else 'No'}")
     print(f"From email: {email_service.from_email}")
     print(f"From name: {email_service.from_name}")
     print()
@@ -53,17 +52,16 @@ def test_email_service():
     
     # Test 3: Custom email
     print("\n3. Testing custom email...")
-    success = email_service.send_email(
-        test_email,
-        "SendGrid Integration Test",
-        "<h1>Test Email</h1><p>This is a test email to verify SendGrid integration.</p>",
-        "Test Email\n\nThis is a test email to verify SendGrid integration."
-    )
+    custom_subject = "Test Email from Portfolio API"
+    custom_html = "<h1>Test Email</h1><p>This is a test email from the portfolio API.</p>"
+    custom_text = "Test Email\n\nThis is a test email from the portfolio API."
+    
+    success = email_service.send_email(test_email, custom_subject, custom_html, custom_text)
     print(f"   Result: {'✅ Success' if success else '❌ Failed'}")
     
     print("\n" + "=" * 50)
-    print("Email testing complete!")
-    print("Check your email inbox for the test messages.")
+    print("Email testing completed!")
+
 
 if __name__ == "__main__":
     test_email_service() 

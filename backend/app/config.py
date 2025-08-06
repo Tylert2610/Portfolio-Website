@@ -3,22 +3,22 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
-    # Database
-    DATABASE_URL: str = "sqlite:///./portfolio_blog.db"
+    # Database - No defaults for critical connection settings
+    DATABASE_URL: str
     
-    # Security
-    SECRET_KEY: str = "your-secret-key-here"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    # PostgreSQL specific settings (for docker-compose)
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str
+    POSTGRES_PORT: int
     
-    # Email
-    SMTP_HOST: Optional[str] = None
-    SMTP_PORT: int = 587
-    SMTP_USER: Optional[str] = None
-    SMTP_PASSWORD: Optional[str] = None
-    EMAIL_FROM: str = "noreply@webbpulse.com"
+    # Security - No defaults for authentication fields
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
     
-    # SendGrid (primary email service)
+    # SendGrid (email service)
     SENDGRID_API_KEY: Optional[str] = None
     SENDGRID_FROM_EMAIL: str = "noreply@webbpulse.com"
     SENDGRID_FROM_NAME: str = "Tyler Webb Portfolio"
@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
+    
+    def get_database_url(self) -> str:
+        """Construct database URL from individual components"""
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 
+# Create settings instance
 settings = Settings() 
