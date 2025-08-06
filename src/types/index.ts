@@ -39,7 +39,7 @@ export interface Project {
   image: string;
   technologies: string[];
   githubUrl?: string;
-  liveUrl?: string;
+  liveUrl?: string | null;
   featured?: boolean;
 }
 
