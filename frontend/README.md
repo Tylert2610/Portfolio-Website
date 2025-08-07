@@ -107,7 +107,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Website**: [portfolio.webbpulse.com](https://portfolio.webbpulse.com) (coming soon)
+- **Website**: [webbpulse.com](https://webbpulse.com) (coming soon)
 - **Email**: [your-email@example.com]
 - **LinkedIn**: [Your LinkedIn Profile]
 
