@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "Portfolio Blog API"
     DEBUG: bool = False
     CORS_ORIGINS: str = (
-        "http://localhost:3000,http://localhost:5173,https://webbpulse.com,https://www.webbpulse.com"
+        "http://localhost:3000,http://localhost:5173,http://localhost:4000,https://webbpulse.com,https://www.webbpulse.com"
     )
 
     @field_validator("CORS_ORIGINS")
@@ -35,7 +35,19 @@ class Settings(BaseSettings):
     def parse_cors_origins(cls, v):
         """Parse comma-separated CORS origins string into a list"""
         if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
+            origins = [origin.strip() for origin in v.split(",") if origin.strip()]
+            # Add localhost with different ports for development
+            if "http://localhost:5173" in origins:
+                origins.extend(
+                    [
+                        "http://localhost:3000",
+                        "http://localhost:4000",
+                        "http://127.0.0.1:5173",
+                        "http://127.0.0.1:3000",
+                        "http://127.0.0.1:4000",
+                    ]
+                )
+            return list(set(origins))  # Remove duplicates
         return v
 
     model_config = ConfigDict(env_file=".env")

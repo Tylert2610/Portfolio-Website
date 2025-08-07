@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Button } from '../common';
-import type { BaseComponentProps, Project } from '../../types';
-import { defaultProjects } from '../../data/projects';
+import type { BaseComponentProps } from '../../types';
+import type { Project } from '../../services/api';
+import { useProjects } from '../../hooks/useApiData';
 
 export interface ProjectsProps extends BaseComponentProps {
   projects?: Project[];
@@ -9,10 +10,56 @@ export interface ProjectsProps extends BaseComponentProps {
 
 export const Projects: React.FC<ProjectsProps> = ({
   className = '',
-  projects = defaultProjects,
+  projects: propProjects,
 }) => {
+  const { data: apiProjects, loading, error } = useProjects();
+  const projects = propProjects || apiProjects || [];
   const [filter, setFilter] = useState<string>('all');
   const [showAll, setShowAll] = useState(false);
+
+  // Show loading state
+  if (loading && !propProjects) {
+    return (
+      <section
+        id="projects"
+        className={`py-20 bg-gray-50 dark:bg-gray-800 ${className}`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-300">
+              Loading projects...
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error && !propProjects) {
+    return (
+      <section
+        id="projects"
+        className={`py-20 bg-gray-50 dark:bg-gray-800 ${className}`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-red-600 dark:text-red-400">
+              Error loading projects: {error}
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => window.location.reload()}
+              className="mt-4"
+            >
+              Retry
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const categories = ['all', 'frontend', 'backend', 'automation'];
 
@@ -155,7 +202,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
       title={project.title}
       description={project.description}
       image={project.image}
-      link={project.liveUrl || undefined}
+      link={project.live_url || undefined}
       category={category}
       placeholderType="project"
       className="group hover:shadow-lg transition-all duration-300"
@@ -180,23 +227,23 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
 
         {/* Project Links */}
         <div className="flex gap-3 pt-4">
-          {project.liveUrl && (
+          {project.live_url && (
             <Button
               variant="primary"
               size="sm"
               onClick={() =>
-                project.liveUrl && window.open(project.liveUrl, '_blank')
+                project.live_url && window.open(project.live_url, '_blank')
               }
               className="flex-1"
             >
               Live Demo
             </Button>
           )}
-          {project.githubUrl && (
+          {project.github_url && (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.open(project.githubUrl, '_blank')}
+              onClick={() => window.open(project.github_url, '_blank')}
               className="flex-1"
             >
               View Code
