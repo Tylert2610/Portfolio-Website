@@ -130,6 +130,7 @@ SENDGRID_FROM_NAME=Tyler Webb Portfolio
 
 # Application
 DEBUG=true
+LOG_SQL_QUERIES=false  # Set to true to see SQL queries in logs
 ```
 
 ## Database Management
@@ -290,6 +291,43 @@ DATABASE_URL=postgresql://user:password@host:port/database
 SECRET_KEY=your-production-secret-key
 DEBUG=false
 SENDGRID_API_KEY=your-production-sendgrid-key
+```
+
+## Logging Configuration
+
+The application uses a configurable logging system to control the verbosity of logs:
+
+### Environment Variables
+
+- `LOG_SQL_QUERIES`: Set to `true` to enable SQL query logging (default: `false`)
+- `DEBUG`: Set to `true` for debug mode (default: `false`)
+
+### Log Levels
+
+- **INFO**: API requests, database connections, application events
+- **WARNING**: SQLAlchemy warnings, connection pool issues
+- **ERROR**: Database errors, authentication failures, critical issues
+
+### SQLAlchemy Logging
+
+By default, SQLAlchemy engine logs are suppressed to reduce noise. To enable SQL query logging:
+
+```env
+LOG_SQL_QUERIES=true
+```
+
+This will show:
+
+- SQL queries being executed
+- Query parameters
+- Execution time
+
+### Testing Logging
+
+You can test the logging configuration:
+
+```bash
+python test_logging.py
 ```
 
 ## Troubleshooting

@@ -6,7 +6,16 @@ from .config import settings
 from .database import run_migrations, test_db_connection
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+
+# Suppress verbose SQLAlchemy logs
+logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+logging.getLogger("sqlalchemy.pool").setLevel(logging.WARNING)
+logging.getLogger("sqlalchemy.dialects").setLevel(logging.WARNING)
+
+# Keep API logs at INFO level
 logger = logging.getLogger(__name__)
 
 

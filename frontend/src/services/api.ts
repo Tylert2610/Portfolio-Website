@@ -53,6 +53,12 @@ export interface Category {
   description?: string;
 }
 
+export interface NewsletterSubscription {
+  email: string;
+  first_name?: string;
+  last_name?: string;
+}
+
 export interface UserLogin {
   username: string;
   password: string;
@@ -223,6 +229,10 @@ class ApiService {
     return this.request<BlogPost[]>('/posts/');
   }
 
+  async getAdminBlogPosts(): Promise<ApiResponse<BlogPost[]>> {
+    return this.request<BlogPost[]>('/posts/admin');
+  }
+
   async getBlogPost(id: number): Promise<ApiResponse<BlogPost>> {
     return this.request<BlogPost>(`/posts/${id}`);
   }
@@ -235,7 +245,7 @@ class ApiService {
   async createBlogPost(
     post: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>
   ): Promise<ApiResponse<BlogPost>> {
-    return this.request<BlogPost>('/admin/posts', {
+    return this.request<BlogPost>('/posts/admin', {
       method: 'POST',
       body: JSON.stringify(post),
     });
@@ -245,27 +255,66 @@ class ApiService {
     id: number,
     post: Partial<BlogPost>
   ): Promise<ApiResponse<BlogPost>> {
-    return this.request<BlogPost>(`/admin/posts/${id}`, {
+    return this.request<BlogPost>(`/posts/admin/${id}`, {
       method: 'PUT',
       body: JSON.stringify(post),
     });
   }
 
   async deleteBlogPost(id: number): Promise<ApiResponse<{ message: string }>> {
-    return this.request<{ message: string }>(`/admin/posts/${id}`, {
+    return this.request<{ message: string }>(`/posts/admin/${id}`, {
       method: 'DELETE',
     });
   }
 
   async publishBlogPost(id: number): Promise<ApiResponse<{ message: string }>> {
-    return this.request<{ message: string }>(`/admin/posts/${id}/publish`, {
+    return this.request<{ message: string }>(`/posts/admin/${id}/publish`, {
       method: 'POST',
     });
   }
 
   // Categories API
   async getCategories(): Promise<ApiResponse<Category[]>> {
-    return this.request<Category[]>('/categories/');
+    return this.request<Category[]>('/posts/categories');
+  }
+
+  // Admin CRUD operations for Categories
+  async createCategory(
+    category: Omit<Category, 'id'>
+  ): Promise<ApiResponse<Category>> {
+    return this.request<Category>('/posts/categories', {
+      method: 'POST',
+      body: JSON.stringify(category),
+    });
+  }
+
+  async updateCategory(
+    id: number,
+    category: Partial<Category>
+  ): Promise<ApiResponse<Category>> {
+    return this.request<Category>(`/posts/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(category),
+    });
+  }
+
+  async deleteCategory(id: number): Promise<ApiResponse<{ message: string }>> {
+    return this.request<{ message: string }>(`/posts/categories/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Newsletter Subscription API
+  async subscribeToNewsletter(
+    subscription: NewsletterSubscription
+  ): Promise<ApiResponse<{ message: string; email: string; status: string }>> {
+    return this.request<{ message: string; email: string; status: string }>(
+      '/subscribers/subscribe',
+      {
+        method: 'POST',
+        body: JSON.stringify(subscription),
+      }
+    );
   }
 }
 

@@ -85,4 +85,10 @@ export interface Category {
   description?: string;
 }
 
-export type AdminTab = 'projects' | 'experience' | 'blog';
+export interface CategoryFormData {
+  name: string;
+  slug: string;
+  description: string;
+}
+
+export type AdminTab = 'projects' | 'experience' | 'blog' | 'categories';

@@ -8,7 +8,6 @@ import sys
 from .config import settings
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Use the DATABASE_URL from settings or construct it from individual components
@@ -21,7 +20,7 @@ engine = create_engine(
     pool_recycle=300,
     pool_size=10,
     max_overflow=20,
-    echo=settings.DEBUG,  # Log SQL queries in debug mode
+    echo=settings.LOG_SQL_QUERIES,  # Log SQL queries only when explicitly enabled
 )
 
 # Create session factory

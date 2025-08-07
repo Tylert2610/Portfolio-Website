@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '../common';
 
 interface LoginFormProps {
@@ -80,6 +81,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               {loading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
+
+          {/* Back to Home */}
+          <div className="mt-6 text-center">
+            <Link to="/">
+              <Button variant="outline">← Back to Home</Button>
+            </Link>
+          </div>
+
           <div className="mt-4 text-sm text-gray-600 dark:text-gray-400 text-center">
             Enter your admin credentials
           </div>

@@ -1,26 +1,20 @@
-import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home } from './pages';
 import { AdminPanel } from './components/admin/AdminPanel';
+import { BlogList } from './components/sections/BlogList';
+import { BlogPost } from './components/sections/BlogPost';
 import './styles/globals.css';
 
 function App() {
-  const [showAdmin, setShowAdmin] = useState(false);
-
-  useEffect(() => {
-    // Check if admin parameter is in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const isAdmin = urlParams.get('admin') === 'true';
-    setShowAdmin(isAdmin);
-  }, []);
-
-  if (showAdmin) {
-    return <AdminPanel />;
-  }
-
   return (
-    <div className="App">
-      <Home />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    </Router>
   );
 }
 
