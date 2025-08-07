@@ -51,10 +51,17 @@ def check_tables_exist():
         existing_tables = inspector.get_table_names()
 
         # Import all models to get table names
-        from .models import user, post, category, subscriber
+        from .models import user, post, category, subscriber, project, experience
 
         # Get expected table names from models
-        expected_tables = ["users", "categories", "posts", "subscribers"]
+        expected_tables = [
+            "users",
+            "categories",
+            "posts",
+            "subscribers",
+            "projects",
+            "experience",
+        ]
 
         missing_tables = [
             table for table in expected_tables if table not in existing_tables
@@ -102,7 +109,7 @@ def init_db():
             return
 
         # Import all models here to ensure they are registered
-        from .models import user, post, category, subscriber
+        from .models import user, post, category, subscriber, project, experience
 
         # Create all tables
         Base.metadata.create_all(bind=engine)
