@@ -36,6 +36,15 @@ const Header: React.FC<HeaderProps> = ({ navigationItems = [] }) => {
                 {item.label}
               </a>
             ))}
+            {/* Admin Link - Only visible in development */}
+            {import.meta.env.DEV && (
+              <a
+                href="?admin=true"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Admin
+              </a>
+            )}
           </nav>
 
           {/* Mobile menu button */}
@@ -86,6 +95,16 @@ const Header: React.FC<HeaderProps> = ({ navigationItems = [] }) => {
                   {item.label}
                 </a>
               ))}
+              {/* Admin Link - Only visible in development */}
+              {import.meta.env.DEV && (
+                <a
+                  href="?admin=true"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Admin
+                </a>
+              )}
             </div>
           </div>
         )}

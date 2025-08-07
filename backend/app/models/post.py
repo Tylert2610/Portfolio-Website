@@ -16,11 +16,13 @@ class Post(Base):
     published_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    
+
     # Foreign keys
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    category_id = Column(
+        Integer, ForeignKey("categories.id"), nullable=True
+    )  # Blog post category
     author_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    
+
     # Relationships
-    category = relationship("Category", back_populates="posts")
-    author = relationship("User") 
+    category = relationship("Category", back_populates="posts")  # Blog post category
+    author = relationship("User")

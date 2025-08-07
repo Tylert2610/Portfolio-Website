@@ -1,10 +1,50 @@
 import React from 'react';
 import type { BaseComponentProps } from '../../types';
-import { experienceData, type ExperienceItem } from '../../data/experience';
+import type { Experience as ExperienceType } from '../../services/api';
+import { useExperience } from '../../hooks/useApiData';
 
 export type ExperienceProps = BaseComponentProps;
 
 export const Experience: React.FC<ExperienceProps> = ({ className = '' }) => {
+  const { data: experienceData, loading, error } = useExperience();
+
+  // Show loading state
+  if (loading) {
+    return (
+      <section
+        id="experience"
+        className={`py-20 bg-white dark:bg-gray-900 ${className}`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-300">
+              Loading experience...
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <section
+        id="experience"
+        className={`py-20 bg-white dark:bg-gray-900 ${className}`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-red-600 dark:text-red-400">
+              Error loading experience: {error}
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       id="experience"
@@ -27,7 +67,7 @@ export const Experience: React.FC<ExperienceProps> = ({ className = '' }) => {
 
           {/* Experience Items */}
           <div className="space-y-12">
-            {experienceData.map((item, index) => (
+            {experienceData?.map((item, index) => (
               <ExperienceItem key={item.id} item={item} index={index} />
             ))}
           </div>
@@ -102,7 +142,7 @@ export const Experience: React.FC<ExperienceProps> = ({ className = '' }) => {
   );
 };
 
-const ExperienceItem: React.FC<{ item: ExperienceItem; index: number }> = ({
+const ExperienceItem: React.FC<{ item: ExperienceType; index: number }> = ({
   item,
   index,
 }) => {
