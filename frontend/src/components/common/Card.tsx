@@ -66,7 +66,7 @@ const Card: React.FC<CardProps> = ({
 
   const cardContent = (
     <div
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden ${className}`}
+      className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md dark:shadow-md dark:hover:shadow-lg transition-shadow duration-200 overflow-hidden ${className}`}
     >
       <div className="aspect-video overflow-hidden">
         {image ? (

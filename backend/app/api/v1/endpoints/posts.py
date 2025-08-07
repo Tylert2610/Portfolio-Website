@@ -37,6 +37,27 @@ async def get_posts(
     return posts
 
 
+@router.get("/admin", response_model=List[PostSchema])
+async def get_all_posts(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get all posts (including unpublished) for admin panel"""
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized to view all posts")
+
+    posts = db.query(Post).order_by(Post.created_at.desc()).all()
+    return posts
+
+
+# Category management endpoints (since categories are specific to blog posts)
+@router.get("/categories", response_model=List[CategorySchema])
+async def get_categories(db: Session = Depends(get_db)):
+    """Get all blog post categories"""
+    categories = db.query(Category).order_by(Category.name).all()
+    return categories
+
+
 @router.get("/{slug}", response_model=PostSchema)
 async def get_post(slug: str, db: Session = Depends(get_db)):
     """Get a single post by slug"""
@@ -179,14 +200,6 @@ async def publish_post(
     email_service.send_new_post_notification(db_post.title, post_url)
 
     return {"message": "Post published successfully"}
-
-
-# Category management endpoints (since categories are specific to blog posts)
-@router.get("/categories", response_model=List[CategorySchema])
-async def get_categories(db: Session = Depends(get_db)):
-    """Get all blog post categories"""
-    categories = db.query(Category).order_by(Category.name).all()
-    return categories
 
 
 @router.post("/categories", response_model=CategorySchema)

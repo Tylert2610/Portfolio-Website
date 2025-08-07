@@ -5,15 +5,18 @@ import { LoginForm } from './LoginForm';
 import { ProjectForm } from './ProjectForm';
 import { ExperienceForm } from './ExperienceForm';
 import { BlogPostForm } from './BlogPostForm';
+import { CategoryForm } from './CategoryForm';
 import type {
   AdminPanelProps,
   AdminTab,
   Project,
   Experience,
   BlogPost,
+  Category,
   ProjectFormData,
   ExperienceFormData,
   BlogPostFormData,
+  CategoryFormData,
 } from './types';
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
@@ -68,6 +71,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
     published_at: undefined,
   });
 
+  // Categories state
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [categoryForm, setCategoryForm] = useState<CategoryFormData>({
+    name: '',
+    slug: '',
+    description: '',
+  });
+
   // Check for existing authentication on mount
   useEffect(() => {
     if (apiService.isAuthenticated()) {
@@ -81,6 +94,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
       loadProjects();
       loadExperience();
       loadBlogPosts();
+      loadCategories();
     }
   }, [isAuthenticated]);
 
@@ -108,11 +122,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
 
   const loadBlogPosts = async () => {
     setLoading(true);
-    const response = await apiService.getBlogPosts();
+    const response = await apiService.getAdminBlogPosts();
     if (response.error) {
       setError(`Failed to load blog posts: ${response.error}`);
     } else {
       setBlogPosts(response.data || []);
+    }
+    setLoading(false);
+  };
+
+  const loadCategories = async () => {
+    setLoading(true);
+    const response = await apiService.getCategories();
+    if (response.error) {
+      setError(`Failed to load categories: ${response.error}`);
+    } else {
+      setCategories(response.data || []);
     }
     setLoading(false);
   };
@@ -413,6 +438,83 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
     });
   };
 
+  // Category CRUD operations
+  const handleCategorySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (editingCategory) {
+        // Update category
+        const response = await apiService.updateCategory(
+          editingCategory.id,
+          categoryForm
+        );
+        if (response.error) {
+          setError(`Failed to update category: ${response.error}`);
+        } else {
+          await loadCategories();
+          setShowCategoryForm(false);
+          setEditingCategory(null);
+          resetCategoryForm();
+        }
+      } else {
+        // Create category
+        const response = await apiService.createCategory(categoryForm);
+        if (response.error) {
+          setError(`Failed to create category: ${response.error}`);
+        } else {
+          await loadCategories();
+          setShowCategoryForm(false);
+          resetCategoryForm();
+        }
+      }
+    } catch {
+      setError('Operation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCategoryEdit = (category: Category) => {
+    setEditingCategory(category);
+    setCategoryForm({
+      name: category.name,
+      slug: category.slug,
+      description: category.description || '',
+    });
+    setShowCategoryForm(true);
+  };
+
+  const handleCategoryDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this category?')) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiService.deleteCategory(id);
+      if (response.error) {
+        setError(`Failed to delete category: ${response.error}`);
+      } else {
+        await loadCategories();
+      }
+    } catch {
+      setError('Delete failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetCategoryForm = () => {
+    setCategoryForm({
+      name: '',
+      slug: '',
+      description: '',
+    });
+  };
+
   if (!isAuthenticated) {
     return (
       <LoginForm
@@ -436,16 +538,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Admin Panel
               </h1>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  apiService.logout();
-                  setIsAuthenticated(false);
-                }}
-                size="sm"
-              >
-                Logout
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => (window.location.href = '/')}
+                  size="sm"
+                >
+                  Back to Main Page
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    apiService.logout();
+                    setIsAuthenticated(false);
+                  }}
+                  size="sm"
+                >
+                  Logout
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -481,6 +592,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
                 }`}
               >
                 Blog Posts
+              </button>
+              <button
+                onClick={() => setActiveTab('categories')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'categories'
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+              >
+                Categories
               </button>
             </nav>
           </div>
@@ -580,7 +701,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
                             size="sm"
                             onClick={() => handleProjectDelete(project.id)}
                             disabled={loading}
-                            className="text-red-600 hover:text-red-700"
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                           >
                             Delete
                           </Button>
@@ -676,7 +797,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
                             size="sm"
                             onClick={() => handleExperienceDelete(exp.id)}
                             disabled={loading}
-                            className="text-red-600 hover:text-red-700"
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                           >
                             Delete
                           </Button>
@@ -772,7 +893,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
                               size="sm"
                               onClick={() => handleBlogPostPublish(post.id)}
                               disabled={loading}
-                              className="text-green-600 hover:text-green-700"
+                              className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"
                             >
                               Publish
                             </Button>
@@ -782,7 +903,89 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ className = '' }) => {
                             size="sm"
                             onClick={() => handleBlogPostDelete(post.id)}
                             disabled={loading}
-                            className="text-red-600 hover:text-red-700"
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'categories' && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Manage Categories
+                  </h2>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => {
+                      setShowCategoryForm(true);
+                      setEditingCategory(null);
+                      resetCategoryForm();
+                    }}
+                    disabled={loading}
+                  >
+                    Add New Category
+                  </Button>
+                </div>
+
+                {showCategoryForm && (
+                  <CategoryForm
+                    form={categoryForm}
+                    setForm={setCategoryForm}
+                    onSubmit={handleCategorySubmit}
+                    onCancel={() => {
+                      setShowCategoryForm(false);
+                      setEditingCategory(null);
+                      resetCategoryForm();
+                    }}
+                    editingCategory={editingCategory}
+                    loading={loading}
+                  />
+                )}
+
+                {/* Categories List */}
+                <div className="space-y-4">
+                  {categories.map(category => (
+                    <div
+                      key={category.id}
+                      className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {category.name}
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            Slug: {category.slug}
+                          </p>
+                          {category.description && (
+                            <p className="text-gray-700 dark:text-gray-300 mt-2">
+                              {category.description}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex gap-2 ml-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleCategoryEdit(category)}
+                            disabled={loading}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleCategoryDelete(category.id)}
+                            disabled={loading}
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                           >
                             Delete
                           </Button>
