@@ -41,6 +41,7 @@ nano .env
 ```
 
 This script will:
+
 - Start PostgreSQL database container
 - Create virtual environment
 - Install dependencies
@@ -93,8 +94,11 @@ pip install -r requirements.txt
 ### 3. Initialize Database
 
 ```bash
-# Initialize tables
-python -c "from app.database import init_db; init_db()"
+# Apply database migrations
+python migrate.py upgrade
+
+# Or using alembic directly
+alembic upgrade head
 ```
 
 ### 4. Start Application
@@ -113,7 +117,6 @@ POSTGRES_DB=portfolio_blog
 POSTGRES_USER=portfolio_user
 POSTGRES_PASSWORD=your_secure_password
 POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
 
 # Security
 SECRET_KEY=your-secret-key-here
@@ -134,6 +137,7 @@ DEBUG=true
 ### Using PgAdmin
 
 1. Start pgAdmin with the tools profile:
+
    ```bash
    docker-compose --profile tools up -d pgadmin
    ```
@@ -164,10 +168,12 @@ docker-compose up -d postgres
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/v1/auth/login` - User login
 - `POST /api/v1/auth/register` - User registration
 
 ### Blog Posts
+
 - `GET /api/v1/posts` - List all posts
 - `POST /api/v1/posts` - Create new post
 - `GET /api/v1/posts/{post_id}` - Get specific post
@@ -175,10 +181,12 @@ docker-compose up -d postgres
 - `DELETE /api/v1/posts/{post_id}` - Delete post
 
 ### Categories
+
 - `GET /api/v1/categories` - List all categories
 - `POST /api/v1/categories` - Create new category
 
 ### Subscribers
+
 - `POST /api/v1/subscribers` - Subscribe to newsletter
 - `GET /api/v1/subscribers` - List subscribers (admin only)
 
@@ -215,18 +223,56 @@ pytest
 
 ### Database Migrations
 
-The application uses SQLAlchemy's `create_all()` for development. For production, consider using Alembic for migrations:
+The application uses Alembic for database migrations. This ensures proper version control of database schema changes.
+
+#### Using the Migration Script
 
 ```bash
-# Initialize Alembic
-alembic init alembic
+# Apply all pending migrations
+python migrate.py upgrade
+
+# Create a new migration (auto-generate from model changes)
+python migrate.py revision --autogenerate --message "Add new field to posts"
+
+# Create a new migration manually
+python migrate.py revision --message "Custom migration"
+
+# Show current migration revision
+python migrate.py current
+
+# Show migration history
+python migrate.py history
+
+# Downgrade to a specific revision
+python migrate.py downgrade --revision <revision_id>
+
+# Mark database as being at a specific revision
+python migrate.py stamp --revision <revision_id>
+```
+
+#### Using Alembic Directly
+
+```bash
+# Apply all pending migrations
+alembic upgrade head
 
 # Create migration
 alembic revision --autogenerate -m "Initial migration"
 
-# Apply migration
-alembic upgrade head
+# Show current revision
+alembic current
+
+# Show history
+alembic history
 ```
+
+#### Migration Best Practices
+
+1. **Always create migrations for schema changes** - Don't modify tables directly
+2. **Test migrations** - Test both upgrade and downgrade operations
+3. **Use descriptive messages** - Make migration purpose clear
+4. **Review auto-generated migrations** - Check generated SQL before applying
+5. **Backup before major migrations** - Always backup production data
 
 ## Production Deployment
 
@@ -251,11 +297,13 @@ SENDGRID_API_KEY=your-production-sendgrid-key
 ### Database Connection Issues
 
 1. Check if PostgreSQL container is running:
+
    ```bash
    docker-compose ps
    ```
 
 2. Check database logs:
+
    ```bash
    docker-compose logs postgres
    ```
@@ -265,16 +313,10 @@ SENDGRID_API_KEY=your-production-sendgrid-key
    python -c "from app.database import test_db_connection; print(test_db_connection())"
    ```
 
-### Port Conflicts
-
-If port 5432 is already in use:
-1. Change `POSTGRES_PORT` in `.env` file
-2. Update `DATABASE_URL` accordingly
-3. Restart containers: `docker-compose down && docker-compose up -d`
-
 ### Permission Issues
 
 If you get permission errors:
+
 ```bash
 # Make setup script executable
 chmod +x dev-setup.sh

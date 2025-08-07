@@ -94,17 +94,19 @@ docker-compose up -d postgres
 ## Troubleshooting
 
 ### Database Connection Issues
+
 - Ensure Docker is running
 - Check if port 5432 is available
 - Verify environment variables in `.env` file
 
 ### Import Errors
+
 - Make sure you're in the `backend` directory
 - Activate your virtual environment
 - Run `python test-setup.py` to verify configuration
 
 ### Port Conflicts
-- Change `POSTGRES_PORT` in `.env` file
+
 - Update `DATABASE_URL` accordingly
 - Restart containers
 
@@ -118,7 +120,8 @@ docker-compose up -d postgres
 ## Production Deployment
 
 For Railway deployment:
+
 1. Set `DATABASE_URL` to your Railway PostgreSQL URL
 2. Set `DEBUG=false`
 3. Configure production `SECRET_KEY`
-4. Set up `SENDGRID_API_KEY` for email notifications 
+4. Set up `SENDGRID_API_KEY` for email notifications
