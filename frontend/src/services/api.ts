@@ -28,6 +28,41 @@ export interface Experience {
   created_at: string;
 }
 
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt?: string;
+  read_time?: string;
+  published_at?: string;
+  created_at: string;
+  updated_at?: string;
+  category_id?: number;
+  category?: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+export interface UserLogin {
+  username: string;
+  password: string;
+}
+
+export interface Token {
+  access_token: string;
+  token_type: string;
+}
+
 export interface ApiResponse<T> {
   data: T;
   error?: string;
@@ -35,9 +70,12 @@ export interface ApiResponse<T> {
 
 class ApiService {
   private baseUrl: string;
+  private authToken: string | null = null;
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
+    // Try to load token from localStorage on initialization
+    this.authToken = localStorage.getItem('authToken');
   }
 
   private async request<T>(
@@ -46,12 +84,23 @@ class ApiService {
   ): Promise<ApiResponse<T>> {
     try {
       const url = `${this.baseUrl}${endpoint}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Add authorization header if token exists
+      if (this.authToken) {
+        headers['Authorization'] = `Bearer ${this.authToken}`;
+      }
+
+      // Merge with any additional headers from options
+      if (options.headers) {
+        Object.assign(headers, options.headers);
+      }
+
       const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
         ...options,
+        headers,
       });
 
       if (!response.ok) {
@@ -70,12 +119,36 @@ class ApiService {
     }
   }
 
+  // Authentication methods
+  async login(credentials: UserLogin): Promise<ApiResponse<Token>> {
+    const response = await this.request<Token>('/admin/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+
+    if (response.data) {
+      this.authToken = response.data.access_token;
+      localStorage.setItem('authToken', this.authToken);
+    }
+
+    return response;
+  }
+
+  logout(): void {
+    this.authToken = null;
+    localStorage.removeItem('authToken');
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.authToken;
+  }
+
   // Projects API
   async getProjects(
     featuredOnly: boolean = false
   ): Promise<ApiResponse<Project[]>> {
     const params = featuredOnly ? '?featured_only=true' : '';
-    return this.request<Project[]>(`/projects/${params}`);
+    return this.request<Project[]>(`/projects${params}`);
   }
 
   async getProject(id: number): Promise<ApiResponse<Project>> {
@@ -90,10 +163,111 @@ class ApiService {
   async getExperienceEntry(id: number): Promise<ApiResponse<Experience>> {
     return this.request<Experience>(`/experience/${id}`);
   }
+
+  // Admin CRUD operations for Projects
+  async createProject(
+    project: Omit<Project, 'id' | 'created_at'>
+  ): Promise<ApiResponse<Project>> {
+    return this.request<Project>('/projects/', {
+      method: 'POST',
+      body: JSON.stringify(project),
+    });
+  }
+
+  async updateProject(
+    id: number,
+    project: Partial<Project>
+  ): Promise<ApiResponse<Project>> {
+    return this.request<Project>(`/projects/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(project),
+    });
+  }
+
+  async deleteProject(id: number): Promise<ApiResponse<{ message: string }>> {
+    return this.request<{ message: string }>(`/projects/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Admin CRUD operations for Experience
+  async createExperience(
+    experience: Omit<Experience, 'id' | 'created_at'>
+  ): Promise<ApiResponse<Experience>> {
+    return this.request<Experience>('/experience/', {
+      method: 'POST',
+      body: JSON.stringify(experience),
+    });
+  }
+
+  async updateExperience(
+    id: number,
+    experience: Partial<Experience>
+  ): Promise<ApiResponse<Experience>> {
+    return this.request<Experience>(`/experience/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(experience),
+    });
+  }
+
+  async deleteExperience(
+    id: number
+  ): Promise<ApiResponse<{ message: string }>> {
+    return this.request<{ message: string }>(`/experience/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Blog Posts API
+  async getBlogPosts(): Promise<ApiResponse<BlogPost[]>> {
+    return this.request<BlogPost[]>('/posts/');
+  }
+
+  async getBlogPost(id: number): Promise<ApiResponse<BlogPost>> {
+    return this.request<BlogPost>(`/posts/${id}`);
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<ApiResponse<BlogPost>> {
+    return this.request<BlogPost>(`/posts/${slug}`);
+  }
+
+  // Admin CRUD operations for Blog Posts
+  async createBlogPost(
+    post: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>
+  ): Promise<ApiResponse<BlogPost>> {
+    return this.request<BlogPost>('/admin/posts', {
+      method: 'POST',
+      body: JSON.stringify(post),
+    });
+  }
+
+  async updateBlogPost(
+    id: number,
+    post: Partial<BlogPost>
+  ): Promise<ApiResponse<BlogPost>> {
+    return this.request<BlogPost>(`/admin/posts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(post),
+    });
+  }
+
+  async deleteBlogPost(id: number): Promise<ApiResponse<{ message: string }>> {
+    return this.request<{ message: string }>(`/admin/posts/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async publishBlogPost(id: number): Promise<ApiResponse<{ message: string }>> {
+    return this.request<{ message: string }>(`/admin/posts/${id}/publish`, {
+      method: 'POST',
+    });
+  }
+
+  // Categories API
+  async getCategories(): Promise<ApiResponse<Category[]>> {
+    return this.request<Category[]>('/categories/');
+  }
 }
 
 // Create and export a singleton instance
 export const apiService = new ApiService();
-
-// Export types for use in components
-export type { Project, Experience, ApiResponse };

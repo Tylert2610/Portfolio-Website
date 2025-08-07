@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/api';
 import type { Project, Experience } from '../services/api';
 
@@ -22,7 +22,7 @@ export function useProjects(
     error: null,
   });
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     const response = await apiService.getProjects(featuredOnly);
@@ -40,11 +40,11 @@ export function useProjects(
         error: null,
       });
     }
-  };
+  }, [featuredOnly]);
 
   useEffect(() => {
     fetchProjects();
-  }, [featuredOnly]);
+  }, [fetchProjects]);
 
   return {
     ...state,
@@ -60,7 +60,7 @@ export function useExperience(): UseApiDataReturn<Experience[]> {
     error: null,
   });
 
-  const fetchExperience = async () => {
+  const fetchExperience = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     const response = await apiService.getExperience();
@@ -78,11 +78,11 @@ export function useExperience(): UseApiDataReturn<Experience[]> {
         error: null,
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchExperience();
-  }, []);
+  }, [fetchExperience]);
 
   return {
     ...state,
@@ -98,7 +98,7 @@ export function useProject(id: number): UseApiDataReturn<Project> {
     error: null,
   });
 
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     const response = await apiService.getProject(id);
@@ -116,13 +116,13 @@ export function useProject(id: number): UseApiDataReturn<Project> {
         error: null,
       });
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     if (id) {
       fetchProject();
     }
-  }, [id]);
+  }, [fetchProject, id]);
 
   return {
     ...state,
@@ -138,7 +138,7 @@ export function useExperienceEntry(id: number): UseApiDataReturn<Experience> {
     error: null,
   });
 
-  const fetchExperienceEntry = async () => {
+  const fetchExperienceEntry = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     const response = await apiService.getExperienceEntry(id);
@@ -156,13 +156,13 @@ export function useExperienceEntry(id: number): UseApiDataReturn<Experience> {
         error: null,
       });
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     if (id) {
       fetchExperienceEntry();
     }
-  }, [id]);
+  }, [fetchExperienceEntry, id]);
 
   return {
     ...state,
