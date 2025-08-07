@@ -47,16 +47,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Initialize database tables
-echo "🗄️  Initializing database tables..."
-python -c "
-from app.database import init_db, test_db_connection
-if test_db_connection():
-    init_db()
-    print('✅ Database tables created successfully')
-else:
-    print('❌ Failed to connect to database')
-    exit(1)
-"
+echo "🗄️  Running database migrations..."
+alembic upgrade head
 
 echo "🎉 Development environment is ready!"
 echo ""
