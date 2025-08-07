@@ -58,6 +58,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.cursor/rules
+
 
 # Environment files
 .env
@@ -157,4 +159,5 @@ coverage/
 # Local development files
 .envrc
 .direnv/
+
 
