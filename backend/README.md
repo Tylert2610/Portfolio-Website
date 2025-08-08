@@ -62,7 +62,6 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - API Documentation: http://localhost:8000/docs
 - ReDoc Documentation: http://localhost:8000/redoc
 - Health Check: http://localhost:8000/health
-- PgAdmin (optional): http://localhost:5050
 
 ## Manual Setup
 
@@ -143,7 +142,6 @@ LOG_SQL_QUERIES=false  # Set to true to see SQL queries in logs
    docker-compose --profile tools up -d pgadmin
    ```
 
-2. Access pgAdmin at http://localhost:5050
 3. Login with credentials from your .env file
 4. Add server connection:
    - Host: postgres (container name)

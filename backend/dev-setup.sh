@@ -28,13 +28,6 @@ docker-compose up -d postgres
 echo "⏳ Waiting for database to be ready..."
 sleep 10
 
-# Check database health
-if docker-compose exec postgres pg_isready -U portfolio_user -d portfolio_blog; then
-    echo "✅ Database is ready!"
-else
-    echo "❌ Database failed to start properly. Check logs with: docker-compose logs postgres"
-    exit 1
-fi
 
 # Install Python dependencies if needed
 if [ ! -d "venv" ]; then
