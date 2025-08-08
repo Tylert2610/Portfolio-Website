@@ -154,7 +154,7 @@ class ApiService {
     featuredOnly: boolean = false
   ): Promise<ApiResponse<Project[]>> {
     const params = featuredOnly ? '?featured_only=true' : '';
-    return this.request<Project[]>(`/projects${params}`);
+    return this.request<Project[]>(`/projects${params}/`);
   }
 
   async getProject(id: number): Promise<ApiResponse<Project>> {
