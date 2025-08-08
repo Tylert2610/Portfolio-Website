@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     LOG_SQL_QUERIES: bool = False  # Set to True to see SQL queries in logs
     CORS_ORIGINS: str = (
-        "http://localhost:3000,http://localhost:5173,http://localhost:4000,http://webbpulse.com,https://www.webbpulse.com"
+        "http://localhost:3000,http://localhost:5173,http://localhost:4000,http://webbpulse.com,https://webbpulse.com"
     )
 
     @field_validator("CORS_ORIGINS")

@@ -9,14 +9,16 @@ from pathlib import Path
 # Add the current directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from app.database import SessionLocal, init_db
+from app.database import SessionLocal as DefaultSessionLocal, init_db
 from app.models.user import User
 from app.core.security import get_password_hash
 from app.config import settings
 
 
-def create_admin_user(username: str, password: str, email: str = None):
+def create_admin_user(username: str, password: str, email: str = None, SessionLocal=None):
     """Create an admin user"""
+    if SessionLocal is None:
+        SessionLocal = DefaultSessionLocal
     db = SessionLocal()
 
     try:
@@ -53,32 +55,36 @@ def create_admin_user(username: str, password: str, email: str = None):
         db.close()
 
 
+
 def main():
-    """Main function"""
-    print("🔐 Portfolio Blog API - Admin User Creation")
-    print("=" * 50)
+    import argparse
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
 
-    # Initialize database if needed
-    try:
-        init_db()
-        print("✅ Database initialized")
-    except Exception as e:
-        print(f"❌ Database initialization failed: {e}")
-        return
+    parser = argparse.ArgumentParser(description="Create an admin user.")
+    parser.add_argument("--username", help="Admin username")
+    parser.add_argument("--password", help="Admin password")
+    parser.add_argument("--email", help="Admin email")
+    parser.add_argument("--db-url", help="Override the database URL")
+    args = parser.parse_args()
 
-    # Get admin credentials
-    print("\n📝 Enter admin user details:")
-    username = input("Username: ").strip()
-    password = input("Password: ").strip()
-    email = input("Email (optional): ").strip() or None
+    # If username/password not provided as flags, prompt interactively
+    username = args.username or input("Username: ").strip()
+    password = args.password or input("Password: ").strip()
+    email = args.email or (input("Email (optional): ").strip() or None)
 
     if not username or not password:
         print("❌ Username and password are required")
         return
 
-    # Create admin user
+    # Optionally override SessionLocal
+    SessionLocal = None
+    if args.db_url:
+        engine = create_engine(args.db_url, pool_pre_ping=True)
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
     print(f"\n🔄 Creating admin user '{username}'...")
-    success = create_admin_user(username, password, email)
+    success = create_admin_user(username, password, email, SessionLocal=SessionLocal)
 
     if success:
         print("\n🎉 Admin user created successfully!")

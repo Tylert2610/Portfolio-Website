@@ -6,8 +6,11 @@ This script reads the static data files and inserts them into the new database t
 
 import sys
 import os
+import argparse
 from datetime import datetime, date
 from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
 
 # Add the backend directory to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -192,9 +195,7 @@ def migrate_experience(db: Session):
         )
 
         if existing_experience:
-            print(
-                f"Experience '{experience_data['title']}' at {experience_data['company']} already exists, skipping..."
-            )
+            print(f"Experience '{experience_data['title']}' at '{experience_data['company']}' already exists, skipping...")
             continue
 
         # Convert date strings to date objects
@@ -217,13 +218,12 @@ def migrate_experience(db: Session):
     print(f"Successfully migrated {len(STATIC_EXPERIENCE)} experience entries")
 
 
-def main():
+
+def main(SessionLocal):
     """Main migration function."""
     print("Starting static data migration...")
 
-    # Create database session
     db = SessionLocal()
-
     try:
         # Migrate projects
         migrate_projects(db)
@@ -242,4 +242,17 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+
+    parser = argparse.ArgumentParser(description="Migrate static project and experience data to the database.")
+    parser.add_argument("--db-url", help="Override the database URL")
+    args = parser.parse_args()
+
+    SessionLocalToUse = SessionLocal
+    if args.db_url:
+        engine = create_engine(args.db_url, pool_pre_ping=True)
+        SessionLocalToUse = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+    main(SessionLocalToUse)

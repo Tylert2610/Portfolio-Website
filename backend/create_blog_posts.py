@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 # Add the app directory to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from app.database import SessionLocal, engine
+from app.database import SessionLocal as DefaultSessionLocal, engine as default_engine
 from app.models import Category, Post, User
 from app.schemas import CategoryCreate, PostCreate
 
@@ -641,24 +641,36 @@ const ThemedButton = () => {
         print(f"Created post: {post_data['title']}")
 
 
+
 def main():
-    """Main function to create categories and blog posts"""
-    db = SessionLocal()
+  import argparse
+  from sqlalchemy import create_engine
+  from sqlalchemy.orm import sessionmaker
 
-    try:
-        print("Creating categories...")
-        categories = create_categories(db)
+  parser = argparse.ArgumentParser(description="Create placeholder blog posts and categories.")
+  parser.add_argument("--db-url", help="Override the database URL")
+  args = parser.parse_args()
 
-        print("\nCreating blog posts...")
-        create_blog_posts(db, categories, None)  # Will find admin user automatically
+  SessionLocal = DefaultSessionLocal
+  if args.db_url:
+    engine = create_engine(args.db_url, pool_pre_ping=True)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-        print("\nBlog setup completed successfully!")
+  db = SessionLocal()
+  try:
+    print("Creating categories...")
+    categories = create_categories(db)
 
-    except Exception as e:
-        print(f"Error: {e}")
-        db.rollback()
-    finally:
-        db.close()
+    print("\nCreating blog posts...")
+    create_blog_posts(db, categories, None)  # Will find admin user automatically
+
+    print("\nBlog setup completed successfully!")
+
+  except Exception as e:
+    print(f"Error: {e}")
+    db.rollback()
+  finally:
+    db.close()
 
 
 if __name__ == "__main__":
