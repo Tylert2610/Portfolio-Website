@@ -4,14 +4,15 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
-    # Database - Use individual components with defaults for development
+    # Database - Railway provides DATABASE_URL, local development uses individual components
     DATABASE_URL: Optional[str] = None
 
-    # PostgreSQL specific settings (for docker-compose)
-    POSTGRES_DB: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_HOST: str
+    # PostgreSQL specific settings (for local development/docker-compose)
+    POSTGRES_DB: Optional[str] = None
+    POSTGRES_USER: Optional[str] = None
+    POSTGRES_PASSWORD: Optional[str] = None
+    POSTGRES_HOST: Optional[str] = None
+
     # Security - Defaults for development
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
@@ -54,8 +55,25 @@ class Settings(BaseSettings):
     model_config = ConfigDict(env_file=".env")
 
     def get_database_url(self) -> str:
-        """Construct database URL from individual components"""
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:5432/{self.POSTGRES_DB}"
+        """Get database URL - prioritize DATABASE_URL (Railway) over individual components (local)"""
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
+
+        # Fall back to individual components for local development
+        if all(
+            [
+                self.POSTGRES_DB,
+                self.POSTGRES_USER,
+                self.POSTGRES_PASSWORD,
+                self.POSTGRES_HOST,
+            ]
+        ):
+            return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:5432/{self.POSTGRES_DB}"
+
+        raise ValueError(
+            "Database configuration error: Either DATABASE_URL must be set (Railway) "
+            "or all individual PostgreSQL components must be set (local development)"
+        )
 
 
 # Create settings instance

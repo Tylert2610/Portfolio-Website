@@ -142,8 +142,8 @@ LOG_SQL_QUERIES=false  # Set to true to see SQL queries in logs
    docker-compose --profile tools up -d pgadmin
    ```
 
-3. Login with credentials from your .env file
-4. Add server connection:
+2. Login with credentials from your .env file
+3. Add server connection:
    - Host: postgres (container name)
    - Port: 5432
    - Database: portfolio_blog
@@ -277,19 +277,48 @@ alembic history
 
 ### Railway Deployment
 
-1. Set up Railway project
-2. Add PostgreSQL service
-3. Configure environment variables
-4. Deploy application
+1. **Set up Railway project**
+
+   - Create a new project on Railway
+   - Connect your GitHub repository
+   - Add a PostgreSQL service (Railway will automatically provide `DATABASE_URL`)
+
+2. **Configure environment variables**
+
+   - `DATABASE_URL`: Automatically provided by Railway when you add PostgreSQL service
+   - `SECRET_KEY`: Set a strong production secret key
+   - `DEBUG`: Set to `false` for production
+   - `SENDGRID_API_KEY`: Your production SendGrid API key
+   - `CORS_ORIGINS`: Update with your production domain(s)
+
+3. **Deploy application**
+   - Railway will automatically deploy when you push to your main branch
+   - Monitor deployment logs in Railway dashboard
 
 ### Environment Variables for Production
 
+**Railway automatically provides:**
+
 ```env
 DATABASE_URL=postgresql://user:password@host:port/database
+```
+
+**You need to set manually:**
+
+```env
 SECRET_KEY=your-production-secret-key
 DEBUG=false
 SENDGRID_API_KEY=your-production-sendgrid-key
+CORS_ORIGINS=https://webbpulse.com,https://www.webbpulse.com
 ```
+
+### Railway-Specific Configuration
+
+- **Database**: Railway automatically creates and manages PostgreSQL database
+- **Environment Variables**: Set through Railway dashboard or CLI
+- **Deployment**: Automatic deployment from GitHub repository
+- **SSL**: Automatic HTTPS certificates
+- **Monitoring**: Built-in logs and metrics in Railway dashboard
 
 ## Logging Configuration
 

@@ -41,7 +41,7 @@ def run_migrations_offline() -> None:
     """
     from app.config import settings
 
-    url = settings.DATABASE_URL or settings.get_database_url()
+    url = settings.get_database_url()
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -64,9 +64,7 @@ def run_migrations_online() -> None:
     from app.config import settings
 
     # Override the database URL from config
-    config.set_main_option(
-        "sqlalchemy.url", settings.DATABASE_URL or settings.get_database_url()
-    )
+    config.set_main_option("sqlalchemy.url", settings.get_database_url())
 
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
