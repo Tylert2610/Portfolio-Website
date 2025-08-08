@@ -159,7 +159,7 @@ DEBUG=true
 **Frontend (.env in /frontend):**
 
 ```env
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=api.webbpulse.com
 ```
 
 ### Production:
