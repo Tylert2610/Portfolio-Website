@@ -118,9 +118,11 @@ Desktop.ini
 .idea/shelf/
 
 # Package manager files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# Allow lockfiles for reproducible builds (required by platforms like Vercel when using `npm ci`)
+# If you intentionally want to ignore lockfiles, remove the following comment and re-add the patterns.
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
 
 # Build outputs
 build/

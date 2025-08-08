@@ -1,4 +1,4 @@
-name: Deploy Portfolio Website
+name: Test Portfolio Website
 
 on:
   push:
@@ -77,20 +77,6 @@ jobs:
       - name: Build frontend
         working-directory: ./frontend
         run: npm run build
-
-  deploy-backend:
-    needs: [test-backend, test-frontend]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Railway
-        uses: railwayapp/railway-deploy@v0.1.1
-        with:
-          service: backend
-          token: ${{ secrets.RAILWAY_TOKEN }}
 
   deploy-frontend:
     needs: [test-backend, test-frontend]
