@@ -25,4 +25,4 @@ class Post(Base):
 
     # Relationships
     category = relationship("Category", back_populates="posts")  # Blog post category
-    author = relationship("User")
+    author = relationship("User", back_populates="posts")

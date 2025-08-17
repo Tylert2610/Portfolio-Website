@@ -32,6 +32,11 @@ class Settings(BaseSettings):
         "http://localhost:3000,http://localhost:5173,http://localhost:4000,http://webbpulse.com,https://webbpulse.com"
     )
 
+    # Rate Limiting
+    RATE_LIMIT_REQUESTS_PER_MINUTE: int = 60
+    RATE_LIMIT_REQUESTS_PER_HOUR: int = 1000
+    RATE_LIMIT_REQUESTS_PER_DAY: int = 10000
+
     @field_validator("CORS_ORIGINS")
     @classmethod
     def parse_cors_origins(cls, v):

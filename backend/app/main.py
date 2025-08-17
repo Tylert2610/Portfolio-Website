@@ -4,6 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 from .config import settings
 from .database import run_migrations, test_db_connection
+from .core.rate_limiter import rate_limit_middleware, rate_limiter
 
 # Configure logging
 logging.basicConfig(
@@ -53,6 +54,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Initialize rate limiter with settings
+rate_limiter.requests_per_minute = settings.RATE_LIMIT_REQUESTS_PER_MINUTE
+rate_limiter.requests_per_hour = settings.RATE_LIMIT_REQUESTS_PER_HOUR
+rate_limiter.requests_per_day = settings.RATE_LIMIT_REQUESTS_PER_DAY
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -73,6 +79,9 @@ app.add_middleware(
     expose_headers=["Content-Length", "Content-Type"],
     max_age=86400,  # Cache preflight requests for 24 hours
 )
+
+# Add rate limiting middleware
+app.middleware("http")(rate_limit_middleware)
 
 # Include API routes
 from .api.v1.api import api_router

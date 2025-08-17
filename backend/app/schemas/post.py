@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 from .category import Category
@@ -6,7 +6,6 @@ from .category import Category
 
 class PostBase(BaseModel):
     title: str
-    slug: str
     content: str
     excerpt: Optional[str] = None
     read_time: Optional[str] = None
@@ -14,7 +13,7 @@ class PostBase(BaseModel):
 
 
 class PostCreate(PostBase):
-    pass
+    slug: Optional[str] = None
 
 
 class PostUpdate(BaseModel):
@@ -29,13 +28,13 @@ class PostUpdate(BaseModel):
 
 class Post(PostBase):
     id: int
+    slug: str
     published_at: Optional[datetime] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
     category: Optional[Category] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PostList(BaseModel):
@@ -48,5 +47,4 @@ class PostList(BaseModel):
     created_at: datetime
     category: Optional[Category] = None
 
-    class Config:
-        from_attributes = True 
+    model_config = ConfigDict(from_attributes=True)

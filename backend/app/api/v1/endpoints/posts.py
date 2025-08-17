@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from ....database import get_db
 from ....models import Post, Category, User
 from ....schemas import (
@@ -111,6 +111,14 @@ async def create_post(
             status_code=400, detail="Post with this slug already exists"
         )
 
+    # Validate category exists if provided
+    if post.category_id:
+        from app.models.category import Category
+
+        category = db.query(Category).filter(Category.id == post.category_id).first()
+        if not category:
+            raise HTTPException(status_code=422, detail="Category not found")
+
     db_post = Post(
         title=post.title,
         slug=post.slug,
@@ -191,7 +199,7 @@ async def publish_post(
         raise HTTPException(status_code=400, detail="Post is already published")
 
     # Publish the post
-    db_post.published_at = datetime.utcnow()
+    db_post.published_at = datetime.now(timezone.utc)
     db.commit()
 
     # Notify subscribers using SendGrid's subscription group

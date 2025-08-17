@@ -19,6 +19,7 @@ class Category(Base):
     slug = Column(
         String, unique=True, index=True, nullable=False
     )  # URL-friendly identifier
+    description = Column(String, nullable=True)  # Optional description
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
