@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ARRAY, Date
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, JSON, Date
 from sqlalchemy.sql import func
 from ..database import Base
 
@@ -14,8 +14,8 @@ class Experience(Base):
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=True)  # Optional for current positions
     description = Column(Text, nullable=False)
-    technologies = Column(ARRAY(String), nullable=False, default=[])
-    achievements = Column(ARRAY(String), nullable=False, default=[])
+    technologies = Column(JSON, nullable=False, default=list)
+    achievements = Column(JSON, nullable=False, default=list)
     is_active = Column(Boolean, default=True)  # For soft deletes
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

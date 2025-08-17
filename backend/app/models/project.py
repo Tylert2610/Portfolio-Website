@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ARRAY
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, JSON
 from sqlalchemy.sql import func
 from ..database import Base
 
@@ -10,7 +10,7 @@ class Project(Base):
     title = Column(String, nullable=False)
     description = Column(Text, nullable=False)
     image = Column(String, nullable=True)  # URL to project image
-    technologies = Column(ARRAY(String), nullable=False, default=[])
+    technologies = Column(JSON, nullable=False, default=list)
     github_url = Column(String, nullable=True)
     live_url = Column(String, nullable=True)
     featured = Column(Boolean, default=False)

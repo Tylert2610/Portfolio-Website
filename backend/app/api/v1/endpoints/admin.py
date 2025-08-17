@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict
 from ....database import get_db
 from ....models import (
     User as UserModel,
@@ -18,6 +18,7 @@ from ....core.security import (
     create_access_token,
     verify_token,
 )
+from ....core.rate_limiter import rate_limiter
 from slugify import slugify
 
 router = APIRouter()
@@ -63,3 +64,26 @@ async def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
 
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/rate-limit/stats", response_model=Dict)
+async def get_rate_limit_stats(current_user: UserModel = Depends(get_current_user)):
+    """Get global rate limiting statistics (admin only)"""
+    return rate_limiter.get_global_stats()
+
+
+@router.get("/rate-limit/client/{client_id}", response_model=Dict)
+async def get_client_rate_limit_stats(
+    client_id: str, current_user: UserModel = Depends(get_current_user)
+):
+    """Get rate limiting statistics for a specific client (admin only)"""
+    return rate_limiter.get_client_stats(client_id)
+
+
+@router.post("/rate-limit/client/{client_id}/reset")
+async def reset_client_rate_limit(
+    client_id: str, current_user: UserModel = Depends(get_current_user)
+):
+    """Reset rate limiting for a specific client (admin only)"""
+    rate_limiter.reset_client(client_id)
+    return {"message": f"Rate limiting reset for client: {client_id}"}
