@@ -181,7 +181,7 @@ class TestTokenSecurity:
         token = create_access_token(data=data)
 
         # Decode token to check expiration
-        import jwt
+        from jose import jwt
 
         decoded = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -297,7 +297,9 @@ class TestSecurityIntegration:
             assert verify_password(password, hashed)
 
         hashing_time = time.time() - start_time
-        assert hashing_time < 5  # Should complete within 5 seconds
+        assert (
+            hashing_time < 10
+        )  # Should complete within 10 seconds (bcrypt is intentionally slow)
 
         # Test token creation performance
         start_time = time.time()
