@@ -1,25 +1,18 @@
+from typing import Dict
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
-from typing import List, Dict
-from ....database import get_db
-from ....models import (
-    User as UserModel,
-)
-from ....schemas import (
-    User,
-    UserCreate,
-    UserLogin,
-    Token,
-)
+
+from ....core.rate_limiter import rate_limiter
 from ....core.security import (
-    verify_password,
-    get_password_hash,
     create_access_token,
+    verify_password,
     verify_token,
 )
-from ....core.rate_limiter import rate_limiter
-from slugify import slugify
+from ....database import get_db
+from ....models import User as UserModel
+from ....schemas import Token, UserLogin
 
 router = APIRouter()
 security = HTTPBearer()

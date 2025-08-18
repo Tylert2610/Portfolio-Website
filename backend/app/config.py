@@ -1,10 +1,11 @@
-from pydantic_settings import BaseSettings
-from pydantic import field_validator, ConfigDict
 from typing import Optional
+
+from pydantic import ConfigDict, field_validator
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    # Database - Railway provides DATABASE_URL, local development uses individual components
+    # Database - Railway provides DATABASE_URL
     DATABASE_URL: Optional[str] = None
 
     # PostgreSQL specific settings (for local development/docker-compose)
@@ -29,7 +30,8 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     LOG_SQL_QUERIES: bool = False  # Set to True to see SQL queries in logs
     CORS_ORIGINS: str = (
-        "http://localhost:3000,http://localhost:5173,http://localhost:4000,http://webbpulse.com,https://webbpulse.com"
+        "http://localhost:3000,http://localhost:5173,http://localhost:4000,"
+        "http://webbpulse.com,https://webbpulse.com"
     )
 
     # Rate Limiting
@@ -60,7 +62,7 @@ class Settings(BaseSettings):
     model_config = ConfigDict(env_file=".env")
 
     def get_database_url(self) -> str:
-        """Get database URL - prioritize DATABASE_URL (Railway) over individual components (local)"""
+        """Get database URL - prioritize DATABASE_URL (Railway)"""
         if self.DATABASE_URL:
             return self.DATABASE_URL
 
@@ -73,7 +75,10 @@ class Settings(BaseSettings):
                 self.POSTGRES_HOST,
             ]
         ):
-            return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:5432/{self.POSTGRES_DB}"
+            return (
+                f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+                f"@{self.POSTGRES_HOST}:5432/{self.POSTGRES_DB}"
+            )
 
         raise ValueError(
             "Database configuration error: Either DATABASE_URL must be set (Railway) "

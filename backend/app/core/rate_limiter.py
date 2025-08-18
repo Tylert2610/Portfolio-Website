@@ -3,12 +3,13 @@ Rate limiting implementation using sliding window approach.
 Suitable for small applications with limited concurrent users.
 """
 
-import time
 import logging
 import os
-from typing import Dict, List, Optional
+import time
 from collections import defaultdict
-from fastapi import HTTPException, Request
+from typing import Dict, List, Optional
+
+from fastapi import Request
 from fastapi.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
@@ -18,9 +19,9 @@ class RateLimiter:
     """
     In-memory rate limiter using sliding window approach.
 
-    This implementation is suitable for small applications with limited concurrent users.
-    For production applications with high traffic, consider using Redis or a dedicated
-    rate limiting service.
+    This implementation is suitable for small applications with limited
+    concurrent users. For production applications with high traffic,
+    consider using Redis or a dedicated rate limiting service.
     """
 
     def __init__(

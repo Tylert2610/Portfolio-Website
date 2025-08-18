@@ -1,15 +1,16 @@
-from typing import List, Optional, Dict, Any
+import logging
+from typing import Any, Dict, Optional
+
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (
-    Mail,
     Email,
-    To,
-    Content,
     HtmlContent,
+    Mail,
     PlainTextContent,
+    To,
 )
+
 from ..config import settings
-import logging
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -60,7 +61,8 @@ class EmailService:
                 return True
             else:
                 logger.error(
-                    f"Failed to add to subscription group: {response.status_code} - {response.body}"
+                    f"Failed to add to subscription group: "
+                    f"{response.status_code} - {response.body}"
                 )
                 return False
 
@@ -87,7 +89,8 @@ class EmailService:
                 return True
             else:
                 logger.error(
-                    f"Failed to remove from subscription group: {response.status_code} - {response.body}"
+                    f"Failed to remove from subscription group: "
+                    f"{response.status_code} - {response.body}"
                 )
                 return False
 
@@ -221,11 +224,11 @@ class EmailService:
             return False
 
     def send_new_post_notification(self, post_title: str, post_url: str) -> bool:
-        """Send notification to all subscribers about a new blog post using SendGrid's Marketing API"""
+        """Send notification to all subscribers about
+        a new blog post using SendGrid's Marketing API"""
         try:
             # Use SendGrid's Marketing API to send to entire subscription group
             # This automatically handles unsubscribe compliance
-            url = "https://api.sendgrid.com/v3/mail/batch"
 
             campaign_data = {
                 "name": f"New Blog Post: {post_title}",
@@ -233,7 +236,7 @@ class EmailService:
                 "list_ids": (
                     [self.subscription_group_id] if self.subscription_group_id else []
                 ),
-                "template_id": "d-new_post_notification_template_id",  # TODO: Replace with actual template ID
+                "template_id": "d-new_post_notification_template_id",
                 "dynamic_template_data": {
                     "post_title": post_title,
                     "post_url": post_url,
@@ -247,11 +250,12 @@ class EmailService:
             )
 
             if response.status_code in [200, 201, 202]:
-                logger.info(f"New post notification campaign created successfully")
+                logger.info("New post notification campaign created successfully")
                 return True
             else:
                 logger.error(
-                    f"Failed to create campaign: {response.status_code} - {response.body}"
+                    f"Failed to create campaign: "
+                    f"{response.status_code} - {response.body}"
                 )
                 return False
 

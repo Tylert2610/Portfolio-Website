@@ -1,10 +1,13 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 import logging
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from .api.v1.api import api_router
 from .config import settings
-from .database import run_migrations, test_db_connection
 from .core.rate_limiter import rate_limit_middleware, rate_limiter
+from .database import run_migrations, test_db_connection
 
 # Configure logging
 logging.basicConfig(
@@ -84,8 +87,6 @@ app.add_middleware(
 app.middleware("http")(rate_limit_middleware)
 
 # Include API routes
-from .api.v1.api import api_router
-
 app.include_router(api_router, prefix="/api/v1")
 
 

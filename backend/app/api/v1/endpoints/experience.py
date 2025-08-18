@@ -1,16 +1,13 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from ....database import get_db
-from ....models import Experience
-from ....schemas import (
-    ExperienceList,
-    Experience as ExperienceSchema,
-    ExperienceCreate,
-    ExperienceUpdate,
-)
+
 from ....core.security import get_current_user
-from ....models import User
+from ....database import get_db
+from ....models import Experience, User
+from ....schemas import Experience as ExperienceSchema
+from ....schemas import ExperienceCreate, ExperienceList, ExperienceUpdate
 
 router = APIRouter()
 
@@ -24,7 +21,7 @@ async def get_experience(
     """Get all active experience entries with pagination"""
     experience_entries = (
         db.query(Experience)
-        .filter(Experience.is_active == True)
+        .filter(Experience.is_active)
         .order_by(Experience.start_date.desc())
         .offset(skip)
         .limit(limit)
@@ -38,7 +35,7 @@ async def get_experience_entry(experience_id: int, db: Session = Depends(get_db)
     """Get a single experience entry by ID"""
     experience = (
         db.query(Experience)
-        .filter(Experience.id == experience_id, Experience.is_active == True)
+        .filter(Experience.id == experience_id, Experience.is_active)
         .first()
     )
     if not experience:

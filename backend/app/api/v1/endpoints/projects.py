@@ -1,16 +1,13 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from ....database import get_db
-from ....models import Project
-from ....schemas import (
-    ProjectList,
-    Project as ProjectSchema,
-    ProjectCreate,
-    ProjectUpdate,
-)
+
 from ....core.security import get_current_user
-from ....models import User
+from ....database import get_db
+from ....models import Project, User
+from ....schemas import Project as ProjectSchema
+from ....schemas import ProjectCreate, ProjectList, ProjectUpdate
 
 router = APIRouter()
 
@@ -23,10 +20,10 @@ async def get_projects(
     db: Session = Depends(get_db),
 ):
     """Get all active projects with pagination and optional featured filter"""
-    query = db.query(Project).filter(Project.is_active == True)
+    query = db.query(Project).filter(Project.is_active)
 
     if featured_only:
-        query = query.filter(Project.featured == True)
+        query = query.filter(Project.featured)
 
     projects = query.order_by(Project.created_at.desc()).offset(skip).limit(limit).all()
     return projects
@@ -36,9 +33,7 @@ async def get_projects(
 async def get_project(project_id: int, db: Session = Depends(get_db)):
     """Get a single project by ID"""
     project = (
-        db.query(Project)
-        .filter(Project.id == project_id, Project.is_active == True)
-        .first()
+        db.query(Project).filter(Project.id == project_id, Project.is_active).first()
     )
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")

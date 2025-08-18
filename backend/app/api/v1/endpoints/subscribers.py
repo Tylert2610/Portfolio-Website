@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from ....core.email import email_service
 from ....database import get_db
 from ....schemas import NewsletterSubscription
-from ....core.email import email_service
 
 router = APIRouter()
 

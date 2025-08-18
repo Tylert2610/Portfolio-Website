@@ -1,21 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-from typing import List, Optional
 from datetime import datetime, timezone
-from ....database import get_db
-from ....models import Post, Category, User
-from ....schemas import (
-    PostList,
-    Post as PostSchema,
-    PostCreate,
-    PostUpdate,
-    Category as CategorySchema,
-    CategoryCreate,
-    CategoryUpdate,
-)
-from ....core.security import get_current_user
-from ....core.email import email_service
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from slugify import slugify
+from sqlalchemy.orm import Session
+
+from ....core.email import email_service
+from ....core.security import get_current_user
+from ....database import get_db
+from ....models import Category, Post, User
+from ....schemas import Category as CategorySchema
+from ....schemas import CategoryCreate, CategoryUpdate
+from ....schemas import Post as PostSchema
+from ....schemas import PostCreate, PostList, PostUpdate
 
 router = APIRouter()
 
@@ -290,7 +287,10 @@ async def delete_category(
     if db_category.posts:
         raise HTTPException(
             status_code=400,
-            detail="Cannot delete category that has posts. Please reassign or delete the posts first.",
+            detail=(
+                "Cannot delete category that has posts. "
+                "Please reassign or delete the posts first."
+            ),
         )
 
     db.delete(db_category)

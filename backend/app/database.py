@@ -1,9 +1,11 @@
-from sqlalchemy import create_engine, inspect
-from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy.exc import SQLAlchemyError
 import logging
 import subprocess
 import sys
+
+from sqlalchemy import create_engine, inspect
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 from .config import settings
 
 # Configure logging
@@ -49,7 +51,7 @@ def check_tables_exist():
         existing_tables = inspector.get_table_names()
 
         # Import all models to get table names
-        from .models import user, post, category, project, experience
+        from .models import category, experience, post, project, user  # noqa: F401
 
         # Get expected table names from models
         expected_tables = [
@@ -106,7 +108,7 @@ def init_db():
             return
 
         # Import all models here to ensure they are registered
-        from .models import user, post, category, project, experience
+        from .models import category, experience, post, project, user  # noqa: F401
 
         # Create all tables
         Base.metadata.create_all(bind=engine)
@@ -122,7 +124,7 @@ def test_db_connection():
         with engine.connect() as connection:
             from sqlalchemy import text
 
-            result = connection.execute(text("SELECT 1"))
+            connection.execute(text("SELECT 1"))
             logger.info("Database connection successful")
             return True
     except Exception as e:
