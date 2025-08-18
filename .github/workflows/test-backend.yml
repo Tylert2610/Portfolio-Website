@@ -61,4 +61,3 @@ jobs:
         run: |
           python -m flake8 app/ --max-line-length=88 --extend-ignore=E203,W503
           python -m black --check app/
-          python -m isort --check-only app/

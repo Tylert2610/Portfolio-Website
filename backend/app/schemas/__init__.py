@@ -1,6 +1,5 @@
 from .category import Category, CategoryCreate, CategoryUpdate
-from .experience import (Experience, ExperienceCreate, ExperienceList,
-                         ExperienceUpdate)
+from .experience import Experience, ExperienceCreate, ExperienceList, ExperienceUpdate
 from .post import Post, PostCreate, PostList, PostUpdate
 from .project import Project, ProjectCreate, ProjectList, ProjectUpdate
 from .subscriber import NewsletterSubscription

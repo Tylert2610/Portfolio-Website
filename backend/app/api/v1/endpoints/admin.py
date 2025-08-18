@@ -5,8 +5,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from ....core.rate_limiter import rate_limiter
-from ....core.security import (create_access_token, verify_password,
-                               verify_token)
+from ....core.security import create_access_token, verify_password, verify_token
 from ....database import get_db
 from ....models import User as UserModel
 from ....schemas import Token, UserLogin
