@@ -2,13 +2,8 @@ import logging
 from typing import Any, Dict, Optional
 
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import (
-    Email,
-    HtmlContent,
-    Mail,
-    PlainTextContent,
-    To,
-)
+from sendgrid.helpers.mail import (Email, HtmlContent, Mail, PlainTextContent,
+                                   To)
 
 from ..config import settings
 

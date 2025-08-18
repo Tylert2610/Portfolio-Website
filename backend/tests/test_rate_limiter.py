@@ -2,13 +2,16 @@
 Tests for rate limiting functionality.
 """
 
-import pytest
 import time
+from unittest.mock import AsyncMock, Mock, patch
+
+import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import Mock, patch, AsyncMock
-from app.core.rate_limiter import RateLimiter, rate_limiter, rate_limit_middleware
-from app.main import app
+
 from app.config import settings
+from app.core.rate_limiter import (RateLimiter, rate_limit_middleware,
+                                   rate_limiter)
+from app.main import app
 
 
 class TestRateLimiter:

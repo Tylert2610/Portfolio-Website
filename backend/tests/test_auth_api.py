@@ -2,10 +2,11 @@
 Tests for the authentication API endpoints
 """
 
+from datetime import datetime, timedelta
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
 
 
 class TestAuthAPI:
@@ -57,8 +58,8 @@ class TestAuthAPI:
     @pytest.mark.auth
     def test_login_inactive_user(self, client: TestClient, db_session: Session):
         """Test login with inactive user"""
-        from app.models import User
         from app.core.security import get_password_hash
+        from app.models import User
 
         inactive_user = User(
             email="inactive@example.com",

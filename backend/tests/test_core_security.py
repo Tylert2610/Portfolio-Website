@@ -2,16 +2,14 @@
 Unit tests for the core security module
 """
 
-import pytest
 from datetime import datetime, timedelta
 from unittest.mock import patch
-from app.core.security import (
-    get_password_hash,
-    verify_password,
-    create_access_token,
-    verify_token,
-)
+
+import pytest
+
 from app.config import settings
+from app.core.security import (create_access_token, get_password_hash,
+                               verify_password, verify_token)
 
 
 class TestPasswordSecurity:

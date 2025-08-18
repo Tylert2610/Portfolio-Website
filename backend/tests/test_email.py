@@ -6,6 +6,7 @@ Run this script to test the email service functionality
 
 import os
 import sys
+
 from dotenv import load_dotenv
 
 # Load environment variables

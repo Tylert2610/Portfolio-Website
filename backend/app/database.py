@@ -51,7 +51,8 @@ def check_tables_exist():
         existing_tables = inspector.get_table_names()
 
         # Import all models to get table names
-        from .models import category, experience, post, project, user  # noqa: F401
+        from .models import (category, experience, post, project,  # noqa: F401
+                             user)
 
         # Get expected table names from models
         expected_tables = [
@@ -108,7 +109,8 @@ def init_db():
             return
 
         # Import all models here to ensure they are registered
-        from .models import category, experience, post, project, user  # noqa: F401
+        from .models import (category, experience, post, project,  # noqa: F401
+                             user)
 
         # Create all tables
         Base.metadata.create_all(bind=engine)

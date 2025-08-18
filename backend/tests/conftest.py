@@ -2,17 +2,17 @@
 Pytest configuration and fixtures for the Portfolio Blog API tests
 """
 
-import pytest
 import asyncio
-from typing import Generator, AsyncGenerator
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.pool import StaticPool
 import os
 import sys
 from datetime import datetime, timedelta, timezone
+from typing import AsyncGenerator, Generator
 
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 # Set testing environment variable
 os.environ["TESTING"] = "true"
@@ -32,12 +32,11 @@ def pytest_configure(config):
 # Add the app directory to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from app.main import app
-from app.database import Base, get_db
-from app.models import User, Category, Post, Project, Experience
-from app.core.security import create_access_token, get_password_hash
 from app.config import settings
-
+from app.core.security import create_access_token, get_password_hash
+from app.database import Base, get_db
+from app.main import app
+from app.models import Category, Experience, Post, Project, User
 
 # Test database configuration
 TEST_DATABASE_URL = "sqlite:///./test.db"

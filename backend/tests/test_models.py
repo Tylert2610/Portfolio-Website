@@ -2,10 +2,12 @@
 Unit tests for the database models
 """
 
+from datetime import date, datetime, timezone
+
 import pytest
-from datetime import datetime, date, timezone
 from sqlalchemy.orm import Session
-from app.models import User, Category, Post, Project, Experience
+
+from app.models import Category, Experience, Post, Project, User
 
 
 class TestUserModel:

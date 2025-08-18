@@ -2,9 +2,9 @@
 """
 Test runner script for the Portfolio Blog API
 """
-import sys
-import subprocess
 import os
+import subprocess
+import sys
 from pathlib import Path
 
 

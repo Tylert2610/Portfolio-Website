@@ -9,10 +9,11 @@ from pathlib import Path
 # Add the current directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from app.database import SessionLocal as DefaultSessionLocal, init_db
-from app.models.user import User
-from app.core.security import get_password_hash
 from app.config import settings
+from app.core.security import get_password_hash
+from app.database import SessionLocal as DefaultSessionLocal
+from app.database import init_db
+from app.models.user import User
 
 
 def create_admin_user(username: str, password: str, email: str = None, SessionLocal=None):
@@ -58,6 +59,7 @@ def create_admin_user(username: str, password: str, email: str = None, SessionLo
 
 def main():
     import argparse
+
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 

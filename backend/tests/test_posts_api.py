@@ -2,10 +2,11 @@
 Tests for the posts API endpoints
 """
 
+from datetime import datetime
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
-from datetime import datetime
 
 
 class TestPostsAPI:

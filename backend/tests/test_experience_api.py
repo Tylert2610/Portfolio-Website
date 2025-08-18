@@ -2,10 +2,11 @@
 Tests for the experience API endpoints
 """
 
+from datetime import date, datetime
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
-from datetime import datetime, date
 
 
 class TestExperienceAPI:
