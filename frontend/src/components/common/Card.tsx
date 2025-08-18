@@ -96,12 +96,16 @@ const Card: React.FC<CardProps> = ({
 
   if (link) {
     return (
-      <a
-        href={link}
+      <div
         className="block hover:transform hover:scale-105 transition-transform duration-200"
+        onClick={e => {
+          // Prevent default navigation behavior
+          e.preventDefault();
+          e.stopPropagation();
+        }}
       >
         {cardContent}
-      </a>
+      </div>
     );
   }
 
