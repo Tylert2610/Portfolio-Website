@@ -31,13 +31,13 @@ class Settings(BaseSettings):
     LOG_SQL_QUERIES: bool = False  # Set to True to see SQL queries in logs
     CORS_ORIGINS: str = (
         "http://localhost:3000,http://localhost:5173,http://localhost:4000,"
-        "http://webbpulse.com,https://webbpulse.com"
+        "http://webbpulse.com,https://webbpulse.com,https://www.webbpulse.com"
     )
 
-    # Rate Limiting
-    RATE_LIMIT_REQUESTS_PER_MINUTE: int = 60
-    RATE_LIMIT_REQUESTS_PER_HOUR: int = 1000
-    RATE_LIMIT_REQUESTS_PER_DAY: int = 10000
+    # Rate Limiting60
+    RATE_LIMIT_REQUESTS_PER_MINUTE: int = 1000
+    RATE_LIMIT_REQUESTS_PER_HOUR: int = 10000
+    RATE_LIMIT_REQUESTS_PER_DAY: int = 100000
 
     @field_validator("CORS_ORIGINS")
     @classmethod
@@ -45,17 +45,16 @@ class Settings(BaseSettings):
         """Parse comma-separated CORS origins string into a list"""
         if isinstance(v, str):
             origins = [origin.strip() for origin in v.split(",") if origin.strip()]
-            # Add localhost with different ports for development
-            if "http://localhost:5173" in origins:
-                origins.extend(
-                    [
-                        "http://localhost:3000",
-                        "http://localhost:4000",
-                        "http://127.0.0.1:5173",
-                        "http://127.0.0.1:3000",
-                        "http://127.0.0.1:4000",
-                    ]
-                )
+            # Always add localhost origins for development
+            localhost_origins = [
+                "http://localhost:3000",
+                "http://localhost:4000",
+                "http://localhost:5173",
+                "http://127.0.0.1:3000",
+                "http://127.0.0.1:4000",
+                "http://127.0.0.1:5173",
+            ]
+            origins.extend(localhost_origins)
             return list(set(origins))  # Remove duplicates
         return v
 

@@ -1,6 +1,24 @@
 // API service for communicating with the backend
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'https://api.webbpulse.com/api/v1';
+// Detect environment and set appropriate API base URL
+const getApiBaseUrl = (): string => {
+  // Check if we have an explicit API URL set
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  // Check the Vite mode to determine which backend to use
+  const mode = import.meta.env.MODE;
+
+  if (mode === 'production') {
+    // Use production backend for production mode
+    return 'https://api.webbpulse.com/api/v1';
+  } else {
+    // Use local backend for development mode (default)
+    return 'http://localhost:8000/api/v1';
+  }
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export interface Project {
   id: number;
